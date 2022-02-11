@@ -224,9 +224,14 @@ object SetLang {
             result
         }
 
-        case Delete(Variable(name))=>{
-          //TODO
-          null
+        case Assign(Variable(setName), Delete(value: construct))=>{
+          val originalSetReference = Variable(setName).eval().getValue().asInstanceOf[Set[Any]]
+          val valueToDelete = value.eval().getValue()
+          if originalSetReference.contains(valueToDelete) then
+            originalSetReference.remove(valueToDelete)
+            Value(true)
+          else
+            Value(false)
         }
 
         //Case: Anything else is invalid syntax
@@ -356,9 +361,14 @@ object SetLang {
             result
         }
 
-        case Delete(Variable(name))=>{
-          //TODO
-          null
+        case Assign(Variable(setName), Delete(value: construct))=>{
+          val originalSetReference = Variable(setName).evalInScope(scopeInstance).getValue().asInstanceOf[Set[Any]]
+          val valueToDelete = value.evalInScope(scopeInstance).getValue()
+          if originalSetReference.contains(valueToDelete) then
+            originalSetReference.remove(valueToDelete)
+            Value(true)
+          else
+            Value(false)
         }
 
         //Case: Anything else is invalid syntax
@@ -380,6 +390,7 @@ object SetLang {
         case Value(value) => {
           value
         }
+        case defualt => this
       }
     }
 

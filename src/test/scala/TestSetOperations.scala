@@ -23,6 +23,16 @@ class TestSetOperations extends AnyFlatSpec with Matchers{
 
   it should "Delete a value from a set. [Case: Value is present in set]" in{
 
+    //Create a set and bind it to a name
+    Assign(Variable("testSet"), Insert(1,2,3,4,5,6,7,8,9)).eval()
+    
+    //Delete the value 1 from the set
+    Assign(Variable("testSet"), Delete(Value(1))).eval()
+
+    val actualValue = Variable("testSet").eval().getValue()
+    val expectedValue = Set(2,3,4,5,6,7,8,9)
+
+    compareValues(actualValue, expectedValue) shouldBe true
   }
 
   it should "Delete a value from a set. [Case: Value is not present in set]" in{
