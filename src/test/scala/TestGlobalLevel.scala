@@ -14,9 +14,9 @@ class TestGlobalLevel extends AnyFlatSpec with Matchers{
     Assign(Variable("x"), Insert("a", "b", "c", "d")).eval()
     //then get the value of the set by using the Variable name "x"
     //Variable() returns a Value(), so call getValue() to get the actual set instance
-    def actualValue = Variable("x").eval().getValue()
+    val actualValue = Variable("x").eval().getValue()
     println()
-    def expectedValue = Set("a","b","c","d")
+    val expectedValue = Set("a","b","c","d")
     //now test the value
     val result = if actualValue == expectedValue then true else false
     result shouldBe true

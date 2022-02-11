@@ -21,12 +21,18 @@ object SetLang {
 
   //Definitions for set operations
   enum setOperation:
-    case Insert(value: Any)
+    /*case Insert(value: Any)
     case Union(set1: Set[Any], set2: Set[Any])
     case Intersection(set1: Set[Any], set2: Set[Any])
     case Difference(set1: Set[Any], set2: Set[Any])
     case SymmetricDifference(set1: Set[Any], set2: Set[Any])
-    case CartesianProduct(set1: Set[Any], set2: Set[Any])
+    case CartesianProduct(set1: Set[Any], set2: Set[Any])*/
+    case Insert(value: Any)
+    case Union(set1: Any, set2: Any)
+    case Intersection(set1: Any, set2: Any)
+    case Difference(set1: Any, set2: Any)
+    case SymmetricDifference(set1: Any, set2: Any)
+    case CartesianProduct(set1: Any, set2: Any)
 
     def eval(): Value = {
       this match {
@@ -47,27 +53,32 @@ object SetLang {
           Value(set)
         }
 
-        case Union(set1: Set[Any], set2: Set[Any]) => {
+        /*case Union(set1: Set[Any], set2: Set[Any]) => {
+          val set = set1 | set2
+          Value(set)
+        }*/
+
+        case Union(Value(set1: Set[Any]), Value(set2: Set[Any])) => {
           val set = set1 | set2
           Value(set)
         }
 
-        case Intersection(set1: Set[Any], set2: Set[Any]) => {
+        case Intersection(Value(set1: Set[Any]), Value(set2: Set[Any])) => {
           val set = set1 & set2
           Value(set)
         }
 
-        case Difference(set1: Set[Any], set2: Set[Any]) => {
+        case Difference(Value(set1: Set[Any]), Value(set2: Set[Any])) => {
           val set = set1 &~ set2
           Value(set)
         }
 
-        case SymmetricDifference(set1: Set[Any], set2: Set[Any]) => {
+        case SymmetricDifference(Value(set1: Set[Any]), Value(set2: Set[Any])) => {
           val set = (set1 | set2) &~ (set1 & set2)
           Value(set)
         }
 
-        case CartesianProduct(set1: Set[Any], set2: Set[Any]) => {
+        case CartesianProduct(Value(set1: Set[Any]), Value(set2: Set[Any])) => {
           // TODO: Implement mechanism to calculate the cartesian product of 2 sets
           Value(set1)
         }
@@ -83,7 +94,7 @@ object SetLang {
     case Scope(value: Any) // returns the value that body.eval() would generate
     case Macro(value: Any) //returns the construct that can be applied in a expression
     case Check(setName: String, value: Any)
-    case Delete(name: String, value: Any) //TODO
+    case Delete(value: construct) //TODO
     private case VariableNotFound(variableName: Any) // When user tries to access a variable that was never bound
     private case ScopeNotFound(scopeName: Any) // When user tries to access a variable that was never bound
     private case MacroNotFound(macroName: Any) // When user tries to access a variable that was never bound
@@ -213,6 +224,11 @@ object SetLang {
             result
         }
 
+        case Delete(Variable(name))=>{
+          //TODO
+          null
+        }
+
         //Case: Anything else is invalid syntax
         case default => InvalidSyntax(this)
 
@@ -338,6 +354,11 @@ object SetLang {
             DuplicateInitialization(name)
           else
             result
+        }
+
+        case Delete(Variable(name))=>{
+          //TODO
+          null
         }
 
         //Case: Anything else is invalid syntax
