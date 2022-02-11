@@ -4,6 +4,12 @@
 *.ipr
 *.iws
 .idea
+/src/intellij*/*.iml
+/src/intellij*/*.ipr
+/src/intellij*/*.iws
+**/.cache
+/.idea
+/.settings
 out
 .cache/
 .history/
