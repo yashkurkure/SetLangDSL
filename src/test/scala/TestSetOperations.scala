@@ -102,7 +102,15 @@ class TestSetOperations extends AnyFlatSpec with Matchers{
   }
 
   it should "return the cartesian product of two sets" in{
+    //first let us create a set and assign it to a variable
+    val set1 = Insert(1,2,3).eval() //no need to call getValue(), since Union accepts (Value(Set), Value(Set))
+    val set2 = Insert(2,4,6).eval()
 
+    val actualValue = CartesianProduct(set1, set2).eval().getValue()
+    val expectedValue = Set((1,2),(1,4),(1,6),(2,2),(2,4),(2,6),(3,2),(3,4),(3,6))
+
+    //compare the values
+    compareValues(actualValue, expectedValue) shouldBe true
   }
 
 }

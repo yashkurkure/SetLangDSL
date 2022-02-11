@@ -79,8 +79,12 @@ object SetLang {
         }
 
         case CartesianProduct(Value(set1: Set[Any]), Value(set2: Set[Any])) => {
-          // TODO: Implement mechanism to calculate the cartesian product of 2 sets
-          Value(set1)
+          val resultSet = Set.empty[Any]
+          if set1.isEmpty || set2.isEmpty then
+            Value(resultSet)
+          else
+            set1.foreach(mem1 => (set2.foreach(mem2=>resultSet.add((mem1, mem2)))))
+            Value(resultSet)
         }
 
       }
