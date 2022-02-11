@@ -99,6 +99,7 @@ object SetLang {
     case Macro(value: Any) //returns the construct that can be applied in a expression
     case Check(setName: String, value: Any)
     case Delete(value: construct) //TODO
+    case Add(value: construct)
     private case VariableNotFound(variableName: Any) // When user tries to access a variable that was never bound
     private case ScopeNotFound(scopeName: Any) // When user tries to access a variable that was never bound
     private case MacroNotFound(macroName: Any) // When user tries to access a variable that was never bound
@@ -173,15 +174,14 @@ object SetLang {
         case Check(setName: String, value: Value) => {
 
           //search for the set in the SetLangDSL.scope
-          val result = globalScope.searchBinding(setName)
-
+          val result = globalScope.searchBinding(setName).getValue()
           //check if the set contains the value
           result match {
 
             // result is a set
-            case Value(setValue: Set[Any]) => {
+            case setValue: Set[Any] => {
               //set contains the value
-              if setValue.contains(value.eval()) then
+              if setValue.contains(value.eval().getValue()) then
                 Value(true)
               //set does not contain the value
               else
@@ -189,7 +189,7 @@ object SetLang {
             }
 
             // result is not a set (setName is not bound to a set)
-            case Value(value: Any) => {
+            case anythingElse => {
               NameIsNotBoundToSetValue(setName)
             }
           }
@@ -236,6 +236,16 @@ object SetLang {
             Value(true)
           else
             Value(false)
+        }
+
+        case Assign(Variable(setName), Add(value: construct))=>{
+          val originalSetReference = Variable(setName).eval().getValue().asInstanceOf[Set[Any]]
+          val valueToDelete = value.eval().getValue()
+          if originalSetReference.contains(valueToDelete) then
+            Value(false)
+          else
+            originalSetReference.add(value.getValue())
+            Value(true)
         }
 
         //Case: Anything else is invalid syntax
@@ -309,15 +319,15 @@ object SetLang {
         //Case: Looking up if a set contains a certain value
         case Check(setName: String, value: Value) => {
           //search for the set in the SetLangDSL.scope
-          val result = scopeInstance.searchBinding(setName)
+          val result = scopeInstance.searchBinding(setName).getValue()
 
           //check if the set contains the value
           result match {
 
             // result is a set
-            case Value(setValue: Set[Any]) => {
+            case setValue: Set[Any] => {
               //set contains the value
-              if setValue.contains(value.eval()) then
+              if setValue.contains(value.evalInScope(scopeInstance).getValue()) then
                 Value(true)
               //set does not contain the value
               else
@@ -375,6 +385,16 @@ object SetLang {
             Value(false)
         }
 
+        case Assign(Variable(setName), Add(value: construct))=>{
+          val originalSetReference = Variable(setName).evalInScope(scopeInstance).getValue().asInstanceOf[Set[Any]]
+          val valueToDelete = value.evalInScope(scopeInstance).getValue()
+          if originalSetReference.contains(valueToDelete) then
+            Value(false)
+          else
+            originalSetReference.add(value.getValue())
+            Value(true)
+        }
+
         //Case: Anything else is invalid syntax
         case default => InvalidSyntax(this)
 
@@ -394,7 +414,7 @@ object SetLang {
         case Value(value) => {
           value
         }
-        case defualt => this
+        case default => this
       }
     }
 
