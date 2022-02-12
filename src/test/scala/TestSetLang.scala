@@ -69,7 +69,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
 
   it should "local variables shadow outer variables" in {
 
-    // x is in the global scope
+    // n is in the global scope
     Assign(Variable("n"), Insert("a", "b", "c", "d")).eval()
 
     // declare a scope with the addition to set operation
@@ -93,7 +93,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     //only possible if there is no
 
 
-    // x is in the global scope
+    // myVar is in the global scope
     Assign(Variable("myVar"), Insert("a", "b", "c", "d")).eval()
 
     // declare a scope with the addition to set operation
@@ -103,6 +103,16 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     val result = Scope("myScope3").eval().getValue() //should be the value of y from the global scope
 
     result shouldBe Set("a","b","c","d")
+  }
+
+  it should "create a macro, and execute it correctly" in {
+
+    Assign(Variable("var"), Value("a")).eval()
+    Assign(Variable("someSetName"), Insert("a","b","c")).eval()
+    Macro("someName", Delete(Variable("var"))).eval()
+    Assign(Variable("someSetName"), Macro("someName")).eval()
+
+    println(Variable("someSetName").eval().getValue())
   }
 
 }

@@ -242,6 +242,10 @@ object SetLang {
             Value(true)
         }
 
+        case Assign(Variable(setName), Macro(name))=>{
+          Assign(Variable(setName), Macro(name).eval()).eval()
+        }
+
         //Case: Anything else is invalid syntax
         case default => InvalidSyntax(this)
 
@@ -268,8 +272,7 @@ object SetLang {
           if result == Value(null) then
             MacroNotFound(name)
           else
-            val macroBody = result.getValue().asInstanceOf[setOperation]
-            macroBody.eval()
+            result
         }
 
         //Case: evaluate the SetLangDSL.scope
@@ -387,6 +390,10 @@ object SetLang {
           else
             originalSetReference.add(value.getValue())
             Value(true)
+        }
+
+        case Assign(Variable(setName), Macro(name))=>{
+          Assign(Variable(setName), Macro(name).evalInScope(scopeInstance)).evalInScope(scopeInstance)
         }
 
         //Case: Anything else is invalid syntax
