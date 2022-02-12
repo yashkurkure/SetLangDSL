@@ -3,6 +3,7 @@
 *.iml
 *.ipr
 *.iws
+*.tasty
 .idea
 /src/intellij*/*.iml
 /src/intellij*/*.ipr
