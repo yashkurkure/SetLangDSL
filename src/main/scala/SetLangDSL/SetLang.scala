@@ -1,9 +1,8 @@
 package SetLangDSL
-
 import SetLangDSL.SetLang.construct.*
 import SetLangDSL.SetLang.setOperation.*
 import SetLangDSL.SetLang.{construct, setOperation}
-
+import scala.collection.mutable
 import scala.collection.mutable.Set
 
 /*
@@ -40,7 +39,7 @@ object SetLang {
         // Insert all values of the tuple into a new set
         // return the new set
         case Insert(values: Tuple) =>
-          val set: Set[Any] = Set.empty[Any]
+          val set: Set[Any] = mutable.Set.empty[Any]
           values.productIterator.foreach(x => set.add(x))
           Value(set)
 
@@ -127,8 +126,8 @@ object SetLang {
           if result == Value(null) then
             MacroNotFound(name)
           else
-            val macroBody = result.getValue().asInstanceOf[setOperation]
-            macroBody.eval()
+            val macroBody = result.getValue()
+            macroBody.asInstanceOf[construct]
 
 
         //Case: create the SetLangDSL.scope
