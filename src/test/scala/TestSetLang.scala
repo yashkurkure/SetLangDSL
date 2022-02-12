@@ -3,8 +3,9 @@ import org.scalatest.matchers.should.Matchers
 import collection.mutable.Set
 import SetLangDSL.SetLang.construct.*
 import SetLangDSL.SetLang.setOperation.*
+import SetLangDSL.scope
 
-class TestGlobalLevel extends AnyFlatSpec with Matchers{
+class TestSetLang extends AnyFlatSpec with Matchers{
   behavior of "SetLang in a global SetLangDSL.scope"
   //This suite does not test for 2 or more levels deep nested scopes
 
@@ -64,8 +65,44 @@ class TestGlobalLevel extends AnyFlatSpec with Matchers{
 
     //check if the set was updated with the additional value "e"
     Variable("x").eval().getValue() shouldBe Set("a","b","c","d","e")
+  }
+
+  it should "local variables shadow outer variables" in {
+
+    // x is in the global scope
+    Assign(Variable("n"), Insert("a", "b", "c", "d")).eval()
+
+    // declare a scope with the addition to set operation
+    Scope("myScope2", Assign(Variable("n"), Value(1))).eval()
+
+    //execute the scope
+    Scope("myScope2").eval()
+
+    //Now lets check the value of n in the local scope
+
+    //first get the scope instance
+    val scopeInstance = Variable("myScope2").eval().getValue().asInstanceOf[scope]
+
+    //get the value of the variable from the scope
+    val valueOfn = Variable("n").evalInScope(scopeInstance).getValue() // should be 1
+
+    valueOfn shouldBe 1
+  }
+
+  it should "allow access to global variables from local scopes" in {
+    //only possible if there is no
 
 
+    // x is in the global scope
+    Assign(Variable("myVar"), Insert("a", "b", "c", "d")).eval()
+
+    // declare a scope with the addition to set operation
+    Scope("myScope3", Variable("myVar")).eval()
+
+    //execute the scope
+    val result = Scope("myScope3").eval().getValue() //should be the value of y from the global scope
+
+    result shouldBe Set("a","b","c","d")
   }
 
 }

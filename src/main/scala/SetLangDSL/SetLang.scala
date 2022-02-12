@@ -21,12 +21,6 @@ object SetLang {
 
   //Definitions for set operations
   enum setOperation:
-    /*case Insert(value: Any)
-    case Union(set1: Set[Any], set2: Set[Any])
-    case Intersection(set1: Set[Any], set2: Set[Any])
-    case Difference(set1: Set[Any], set2: Set[Any])
-    case SymmetricDifference(set1: Set[Any], set2: Set[Any])
-    case CartesianProduct(set1: Set[Any], set2: Set[Any])*/
     case Insert(value: Any)
     case Union(set1: Any, set2: Any)
     case Intersection(set1: Any, set2: Any)
@@ -375,7 +369,7 @@ object SetLang {
             result
         }
 
-        case Assign(Variable(setName), Delete(value: construct))=>{
+        case Assign(Variable(setName), Delete(value))=>{
           val originalSetReference = Variable(setName).evalInScope(scopeInstance).getValue().asInstanceOf[Set[Any]]
           val valueToDelete = value.evalInScope(scopeInstance).getValue()
           if originalSetReference.contains(valueToDelete) then
@@ -385,7 +379,7 @@ object SetLang {
             Value(false)
         }
 
-        case Assign(Variable(setName), Add(value: construct))=>{
+        case Assign(Variable(setName), Add(value))=>{
           val originalSetReference = Variable(setName).evalInScope(scopeInstance).getValue().asInstanceOf[Set[Any]]
           val valueToDelete = value.evalInScope(scopeInstance).getValue()
           if originalSetReference.contains(valueToDelete) then
