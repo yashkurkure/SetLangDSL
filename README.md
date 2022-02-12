@@ -152,7 +152,7 @@ Variable("v").evalInScope(scopeInstance).getValue() //would return "a"
 The simple rule is that when a variable is searched for in a scope, the program will first check the local scope, if it is not found it will look up the scope tree till it reaches the global scope.
 The nearest scope with an active binding of the variable would be accessed.
 
-### Macro (buggy)
+### Macro
 
 Intended use is:
 ```
@@ -160,6 +160,10 @@ Intended use is:
 Macro("name", Delete(Value("s")))
 //this would delete the value "s" from the set someSet
 Assign(Variable("someSet"), Macro("name"))
+
+Macro("name2", Add(Value("s")))
+//this would add the value "s" to the set someSet2
+Assign(Variable("someSet2"), Macro("name"))
 ```
 
 ### Usage of the set operations

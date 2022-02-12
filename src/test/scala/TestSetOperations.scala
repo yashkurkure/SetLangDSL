@@ -12,6 +12,7 @@ class TestSetOperations extends AnyFlatSpec with Matchers{
 
   def compareValues(actualValue: Any, expectedValue: Any): Boolean = if actualValue == expectedValue then true else false
 
+  //test 1
   it should "return as set" in{
     //Insert can handle 1 to 22 arguments, of which all will be inserted into a set
     val actualValue = Insert(1,2,3,4,5,6,7,8,9).eval().getValue()
@@ -21,6 +22,7 @@ class TestSetOperations extends AnyFlatSpec with Matchers{
     compareValues(actualValue, expectedValue) shouldBe true
   }
 
+  //test 2
   it should "Delete a value from a set. [Case: Value is present in set]" in{
 
     //Create a set and bind it to a name
@@ -35,6 +37,7 @@ class TestSetOperations extends AnyFlatSpec with Matchers{
     compareValues(actualValue, expectedValue) shouldBe true
   }
 
+  //test 3
   it should "Delete a value from a set. [Case: Value is not present in set]" in{
     //Create a set and bind it to a name
     Assign(Variable("testSet"), Insert(1,2,3,4,5,6,7,8,9)).eval()
@@ -47,6 +50,7 @@ class TestSetOperations extends AnyFlatSpec with Matchers{
 
   }
 
+  //test 4
   it should "return the union of two sets" in{
     //first let us create a set and assign it to a variable
     val set1 = Insert(1,2,3,4,5).eval() //no need to call getValue(), since Union accepts (Value(Set), Value(Set))
@@ -59,6 +63,7 @@ class TestSetOperations extends AnyFlatSpec with Matchers{
     compareValues(actualValue, expectedValue) shouldBe true
   }
 
+  //test 5
   it should "return the intersection of two sets" in{
     //first let us create a set and assign it to a variable
     val set1 = Insert(1,2,3,4,5,11).eval() //no need to call getValue(), since Union accepts (Value(Set), Value(Set))
@@ -73,6 +78,7 @@ class TestSetOperations extends AnyFlatSpec with Matchers{
   }
 
 
+  //test 6
   it should "return the difference of two sets" in{
 
     //first let us create a set and assign it to a variable
@@ -87,6 +93,7 @@ class TestSetOperations extends AnyFlatSpec with Matchers{
 
   }
 
+  //test 7
   it should "return the symmetric difference of two sets" in{
 
     //first let us create a set and assign it to a variable
@@ -101,6 +108,7 @@ class TestSetOperations extends AnyFlatSpec with Matchers{
 
   }
 
+  //test 8
   it should "return the cartesian product of two sets" in{
     //first let us create a set and assign it to a variable
     val set1 = Insert(1,2,3).eval() //no need to call getValue(), since Union accepts (Value(Set), Value(Set))

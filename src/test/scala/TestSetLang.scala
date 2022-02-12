@@ -14,7 +14,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
 
   def compareValues(actualValue: Any, expectedValue: Any): Boolean = if actualValue == expectedValue then true else false
 
-
+  //test 1
   it should "assign a set to a variable (test the binding mechanism)" in {
     //first assign the variable x to a set
     Assign(Variable("x"), Insert("a", "b", "c", "d")).eval()
@@ -29,6 +29,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     result shouldBe true
   }
 
+  //test 2
   it should "return true if a value exists in a set, else return false. [Using Value()]" in{
 
     //first assign the variable x to a set
@@ -41,6 +42,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     if result1 == true && result2 == false then true else false shouldBe true
   }
 
+  //test 3
   it should "return true if a value referenced by a variable exits in a set, else false [Using Variable()]" in {
 
     //first assign the variable x to a set
@@ -55,6 +57,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     if result1 == true && result2 == false then true else false shouldBe true
   }
 
+  //test 4
   it should "add a value to a set from inside a scope" in {
 
     // x is in the global scope
@@ -70,6 +73,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     Variable("x").eval().getValue() shouldBe collection.mutable.Set("a","b","c","d","e")
   }
 
+  //test 5
   it should "local variables shadow outer variables" in {
 
     // n is in the global scope
@@ -92,6 +96,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     valueOfn shouldBe 1
   }
 
+  //test 6
   it should "allow access to global variables from local scopes" in {
     //only possible if there is no
 
@@ -108,15 +113,26 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     result shouldBe collection.mutable.Set("a","b","c","d")
   }
 
-
-  it should "create a macro, and execute it correctly" in {
+  //test 7
+  it should "create a macro, and execute it correctly Delete operation" in {
 
     Assign(Variable("var"), Value("a")).eval()
     Assign(Variable("someSetName"), Insert("a","b","c")).eval()
     Macro("someName", Delete(Variable("var"))).eval()
     Assign(Variable("someSetName"), Macro("someName")).eval()
 
-    println(Variable("someSetName").eval().getValue())
+    Variable("someSetName").eval().getValue() shouldBe collection.mutable.Set("b","c")
+  }
+
+  //test 8
+  it should "create a macro, and execute it correctly Add operation" in {
+
+    Assign(Variable("var2"), Value("d")).eval()
+    Assign(Variable("someSetNameAgain"), Insert("a","b","c")).eval()
+    Macro("someNameAgain",Add(Variable("var2"))).eval()
+    Assign(Variable("someSetNameAgain"), Macro("someNameAgain")).eval()
+
+    Variable("someSetNameAgain").eval().getValue() shouldBe collection.mutable.Set("a","b","c","d")
   }
 
 }

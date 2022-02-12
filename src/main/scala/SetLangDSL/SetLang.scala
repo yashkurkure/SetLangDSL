@@ -238,11 +238,11 @@ object SetLang {
 
         case Assign(Variable(setName), Add(value: construct))=>
           val originalSetReference = Variable(setName).eval().getValue().asInstanceOf[Set[Any]]
-          val valueToDelete = value.eval().getValue()
-          if originalSetReference.contains(valueToDelete) then
+          val valueToAdd = value.eval().getValue()
+          if originalSetReference.contains(valueToAdd) then
             Value(false)
           else
-            originalSetReference.add(value.getValue())
+            originalSetReference.add(valueToAdd)
             Value(true)
 
 
