@@ -4,9 +4,9 @@ import SetLangDSL.SetLang.construct.*
 import SetLangDSL.SetLang.setOperation.*
 import scala.collection.mutable
 
-/**
- * This test suite tests the set operations of setLang
- * */
+/*
+ *  Copyright (c) 2022. Yash Kurkure. All rights reserved.
+ */
 class TestSetOperations extends AnyFlatSpec with Matchers{
   behavior of "Set operations in setLang"
 

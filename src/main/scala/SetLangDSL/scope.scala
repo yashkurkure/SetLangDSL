@@ -1,10 +1,11 @@
 package SetLangDSL
-
 import SetLangDSL.SetLang.construct
 import SetLangDSL.SetLang.construct.*
-
 import scala.collection.mutable.Map
 
+/*
+ *  Copyright (c) 2022. Yash Kurkure. All rights reserved.
+ */
 class scope(name: String, body: construct, parentScope: scope) {
 
   private val bindings = Map.empty[String, Any]

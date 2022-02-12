@@ -6,6 +6,11 @@ import SetLangDSL.SetLang.{construct, setOperation}
 
 import scala.collection.mutable.Set
 
+/*
+ *  Copyright (c) 2022. Yash Kurkure. All rights reserved.
+ */
+
+
 /** Notes:
  * https://stackoverflow.com/questions/47177856/are-scopes-stored-in-a-stack
  * Scope: A SetLangDSL.scope is a semantics construct.

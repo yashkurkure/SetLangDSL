@@ -1,7 +1,9 @@
 import SetLangDSL.SetLang.construct.*
 import SetLangDSL.SetLang.setOperation.*
 import collection.mutable.Set
-
+/*
+ *  Copyright (c) 2022. Yash Kurkure. All rights reserved.
+ */
 object Main {
 
 

@@ -1,5 +1,7 @@
 # SetLangDSL
+By Yash Kurkure
 
+NetID: ykurku2
 # What to import?
 You must import three things:
 1. import SetLangDSL.SetLang.construct.* this covers the following:

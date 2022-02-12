@@ -4,6 +4,9 @@ import collection.mutable.Set
 import SetLangDSL.SetLang.construct.*
 import SetLangDSL.SetLang.setOperation.*
 import SetLangDSL.scope
+/*
+ *  Copyright (c) 2022. Yash Kurkure. All rights reserved.
+ */
 
 class TestSetLang extends AnyFlatSpec with Matchers{
   behavior of "SetLang in a global SetLangDSL.scope"
