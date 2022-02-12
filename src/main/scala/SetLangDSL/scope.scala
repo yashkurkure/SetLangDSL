@@ -11,6 +11,7 @@ class scope(name: String, body: construct, parentScope: scope) {
 
   def getName(): String = name
 
+  //creates an internal scope, used by Scope(name:String, body: construct)
   def createInternalScope(name: String, body: construct): construct={
     //Check if the name is already bound to something
     if bindings.contains(name) then
@@ -22,7 +23,8 @@ class scope(name: String, body: construct, parentScope: scope) {
       bindings += (name -> childScope)
       Value(true)
   }
-
+  
+  // searched for a binding up the scope tree, unless this is the parent tree
   def searchBinding(name: String):construct={
     if parentScope == null then // look in global SetLangDSL.scope
       if bindings.contains(name) then
@@ -36,7 +38,8 @@ class scope(name: String, body: construct, parentScope: scope) {
       else
         parentScope.searchBinding(name)
   }
-
+  
+  // Creates a binding unless it is already present
   def createBinding(name: String, value: Any): construct={
     if bindings.contains(name) then //name is already bound to something
       Value(null)
@@ -45,13 +48,14 @@ class scope(name: String, body: construct, parentScope: scope) {
       Value(value)
 
   }
-
+  
+  // evaluates the scope body
   def evaluateScope(): construct =
   {
     body.evalInScope(this)
   }
 
-
+  //TODO
   def createAnonymousScope():Any={
     null
   }

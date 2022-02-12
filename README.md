@@ -148,4 +148,27 @@ val scopeInstance = Variable("myScope2").eval().getValue().asInstanceOf[scope]
 Variable("v").evalInScope(scopeInstance).getValue() //would return "a"
 ```
 The simple rule is that when a variable is searched for in a scope, the program will first check the local scope, if it is not found it will look up the scope tree till it reaches the global scope.
-The nearest scope with an active binding of the variable would be accessed. 
+The nearest scope with an active binding of the variable would be accessed.
+
+### Macro (buggy)
+
+Intended use is:
+```
+// Initialize a macro
+Macro("name", Delete(Value("s")))
+//this would delete the value "s" from the set someSet
+Assign(Variable("someSet"), Macro("name"))
+```
+
+### Usage of the set operations
+All the set operations work with the Assign() statement.
+The package supports:
+Insert(), Union(), Intersection(), Difference(), SymmetricDifference(), CartesianProduct()
+
+Assume the general format is SetOperation(set1: construct. set2: construct), where construct is any construct statement that returns Value(value)
+
+```
+//Usage
+Assign(Variable("newSet"), SetOperation(Variable("set1"),Variable("set2")))
+//This would assign the set "newSet" with the result of the SetOperation on sets referenced by set1 and set2
+```

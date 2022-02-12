@@ -131,7 +131,7 @@ object SetLang {
           // Since we are in the global SetLangDSL.scope right now, we create a binding in it
           val result = globalScope.createInternalScope(value._1, value._2)
           if result == Value(null) then
-          // Scope could be created sue to duplicate binding
+          // Scope could not be created due to duplicate binding
             DuplicateInitialization(value._1)
           else
           //Scope creation was successful
