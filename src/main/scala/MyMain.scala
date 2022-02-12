@@ -4,10 +4,10 @@ import collection.mutable.Set
 /*
  *  Copyright (c) 2022. Yash Kurkure. All rights reserved.
  */
-object Main {
+object MyMain {
 
 
-  @main def main = {
+  @main def main():Unit = {
     //2 SETS
     Assign(Variable("testSet"), Insert(1,2,3,4,5)).eval()
     Assign(Variable("testSet2"), Insert(6,7,8,9,10)).eval()

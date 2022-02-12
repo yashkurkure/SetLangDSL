@@ -23,7 +23,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     //Variable() returns a Value(), so call getValue() to get the actual set instance
     val actualValue = Variable("x").eval().getValue()
     println()
-    val expectedValue = Set("a","b","c","d")
+    val expectedValue = collection.mutable.Set("a","b","c","d")
     //now test the value
     val result = if actualValue == expectedValue then true else false
     result shouldBe true
@@ -38,7 +38,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     val result1 = Check("x", Value("a")).eval().getValue()// should be true
     val result2 = Check("x", Value("s")).eval().getValue()// should be false
 
-    if(result1 == true && result2 == false) then true else false shouldBe true
+    if result1 == true && result2 == false then true else false shouldBe true
   }
 
   it should "return true if a value referenced by a variable exits in a set, else false [Using Variable()]" in {
@@ -52,7 +52,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     val result1 = Check("x", Variable("y")).eval().getValue()// should be true
     val result2 = Check("x", Variable("z")).eval().getValue()// should be false
 
-    if(result1 == true && result2 == false) then true else false shouldBe true
+    if result1 == true && result2 == false then true else false shouldBe true
   }
 
   it should "add a value to a set from inside a scope" in {
@@ -67,7 +67,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     Scope("myScope").eval()
 
     //check if the set was updated with the additional value "e"
-    Variable("x").eval().getValue() shouldBe Set("a","b","c","d","e")
+    Variable("x").eval().getValue() shouldBe collection.mutable.Set("a","b","c","d","e")
   }
 
   it should "local variables shadow outer variables" in {
@@ -105,7 +105,7 @@ class TestSetLang extends AnyFlatSpec with Matchers{
     //execute the scope
     val result = Scope("myScope3").eval().getValue() //should be the value of y from the global scope
 
-    result shouldBe Set("a","b","c","d")
+    result shouldBe collection.mutable.Set("a","b","c","d")
   }
 
   // Macros are buggy
