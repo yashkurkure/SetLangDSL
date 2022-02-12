@@ -22,11 +22,11 @@ object SetLang {
   //Definitions for set operations
   enum setOperation:
     case Insert(value: Any)
-    case Union(set1: Any, set2: Any)
-    case Intersection(set1: Any, set2: Any)
-    case Difference(set1: Any, set2: Any)
-    case SymmetricDifference(set1: Any, set2: Any)
-    case CartesianProduct(set1: Any, set2: Any)
+    case Union(set1: construct, set2: construct)
+    case Intersection(set1: construct, set2: construct)
+    case Difference(set1: construct, set2: construct)
+    case SymmetricDifference(set1: construct, set2: construct)
+    case CartesianProduct(set1: construct, set2: construct)
     private case InvalidSyntax
 
     def eval(): Value = {
@@ -48,39 +48,36 @@ object SetLang {
           Value(set)
         }
 
-        /*case Union(set1: Set[Any], set2: Set[Any]) => {
-          val set = set1 | set2
-          Value(set)
-        }*/
-
-        case Union(Value(set1), Value(set2)) => {
-          val set = set1.asInstanceOf[Set[Any]] | set2.asInstanceOf[Set[Any]]
+        case Union(set1, set2) => {
+          val set = set1.eval().getValue().asInstanceOf[Set[Any]] | set2.eval().getValue().asInstanceOf[Set[Any]]
           Value(set)
         }
 
-        case Intersection(Value(set1), Value(set2)) => {
-          val set = set1.asInstanceOf[Set[Any]] & set2.asInstanceOf[Set[Any]]
+        case Intersection(set1, set2) => {
+          val set = set1.eval().getValue().asInstanceOf[Set[Any]] & set2.eval().getValue().asInstanceOf[Set[Any]]
           Value(set)
         }
 
-        case Difference(Value(set1), Value(set2)) => {
-          val set = set1.asInstanceOf[Set[Any]] &~ set2.asInstanceOf[Set[Any]]
+        case Difference(set1, set2) => {
+          val set = set1.eval().getValue().asInstanceOf[Set[Any]] &~ set2.eval().getValue().asInstanceOf[Set[Any]]
           Value(set)
         }
 
-        case SymmetricDifference(Value(set1), Value(set2)) => {
-          val set = (set1.asInstanceOf[Set[Any]] | set2.asInstanceOf[Set[Any]]) &~ (set1.asInstanceOf[Set[Any]] & set2.asInstanceOf[Set[Any]])
+        case SymmetricDifference(set1, set2) => {
+          val set = (set1.eval().getValue().asInstanceOf[Set[Any]] | set2.eval().getValue().asInstanceOf[Set[Any]]) &~ (set1.eval().getValue().asInstanceOf[Set[Any]] & set2.eval().getValue().asInstanceOf[Set[Any]])
           Value(set)
         }
 
-        case CartesianProduct(Value(set1), Value(set2)) => {
+        case CartesianProduct(set1, set2) => {
           val resultSet = Set.empty[Any]
-          if set1.asInstanceOf[Set[Any]].isEmpty || set2.asInstanceOf[Set[Any]].isEmpty then
+          if set1.eval().getValue().asInstanceOf[Set[Any]].isEmpty || set2.eval().getValue().asInstanceOf[Set[Any]].isEmpty then
             Value(resultSet)
           else
-            set1.asInstanceOf[Set[Any]].foreach(mem1 => (set2.asInstanceOf[Set[Any]].foreach(mem2=>resultSet.add((mem1, mem2)))))
+            set1.eval().getValue().asInstanceOf[Set[Any]].foreach(mem1 => (set2.eval().getValue().asInstanceOf[Set[Any]].foreach(mem2=>resultSet.add((mem1, mem2)))))
             Value(resultSet)
         }
+
+
 
         case default => Value(InvalidSyntax)
 
@@ -95,7 +92,7 @@ object SetLang {
     case Scope(value: Any) // returns the value that body.eval() would generate
     case Macro(value: Any) //returns the construct that can be applied in a expression
     case Check(setName: String, value: Any)
-    case Delete(value: construct) //TODO
+    case Delete(value: construct)
     case Add(value: construct)
     private case VariableNotFound(variableName: Any) // When user tries to access a variable that was never bound
     private case ScopeNotFound(scopeName: Any) // When user tries to access a variable that was never bound

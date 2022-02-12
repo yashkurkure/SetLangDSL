@@ -6,15 +6,15 @@ object Main {
 
 
   @main def main = {
-    //Create a set and bind it to a name
-    Assign(Variable("testSet"), Insert(1,2,3,4,5,6,7,8,9)).eval()
-
-    println(Variable("testSet").eval().getValue())
-
-    //Delete the value 1 from the set
-    Assign(Variable("testSet"), Delete(Value(1))).eval()
-
-    println(Variable("testSet").eval().getValue())
+    //2 SETS
+    Assign(Variable("testSet"), Insert(1,2,3,4,5)).eval()
+    Assign(Variable("testSet2"), Insert(6,7,8,9,10)).eval()
+    
+    //Take the union of the two sets
+    Assign(Variable("result"), Union(Variable("testSet"), Variable("testSet2"))).eval()
+    
+    //print the value of the new union set
+    println(Variable("result").eval().getValue())
     
   }
 
