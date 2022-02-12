@@ -27,6 +27,7 @@ object SetLang {
     case Difference(set1: Any, set2: Any)
     case SymmetricDifference(set1: Any, set2: Any)
     case CartesianProduct(set1: Any, set2: Any)
+    private case InvalidSyntax
 
     def eval(): Value = {
       this match {
@@ -52,34 +53,36 @@ object SetLang {
           Value(set)
         }*/
 
-        case Union(Value(set1: Set[Any]), Value(set2: Set[Any])) => {
-          val set = set1 | set2
+        case Union(Value(set1), Value(set2)) => {
+          val set = set1.asInstanceOf[Set[Any]] | set2.asInstanceOf[Set[Any]]
           Value(set)
         }
 
-        case Intersection(Value(set1: Set[Any]), Value(set2: Set[Any])) => {
-          val set = set1 & set2
+        case Intersection(Value(set1), Value(set2)) => {
+          val set = set1.asInstanceOf[Set[Any]] & set2.asInstanceOf[Set[Any]]
           Value(set)
         }
 
-        case Difference(Value(set1: Set[Any]), Value(set2: Set[Any])) => {
-          val set = set1 &~ set2
+        case Difference(Value(set1), Value(set2)) => {
+          val set = set1.asInstanceOf[Set[Any]] &~ set2.asInstanceOf[Set[Any]]
           Value(set)
         }
 
-        case SymmetricDifference(Value(set1: Set[Any]), Value(set2: Set[Any])) => {
-          val set = (set1 | set2) &~ (set1 & set2)
+        case SymmetricDifference(Value(set1), Value(set2)) => {
+          val set = (set1.asInstanceOf[Set[Any]] | set2.asInstanceOf[Set[Any]]) &~ (set1.asInstanceOf[Set[Any]] & set2.asInstanceOf[Set[Any]])
           Value(set)
         }
 
-        case CartesianProduct(Value(set1: Set[Any]), Value(set2: Set[Any])) => {
+        case CartesianProduct(Value(set1), Value(set2)) => {
           val resultSet = Set.empty[Any]
-          if set1.isEmpty || set2.isEmpty then
+          if set1.asInstanceOf[Set[Any]].isEmpty || set2.asInstanceOf[Set[Any]].isEmpty then
             Value(resultSet)
           else
-            set1.foreach(mem1 => (set2.foreach(mem2=>resultSet.add((mem1, mem2)))))
+            set1.asInstanceOf[Set[Any]].foreach(mem1 => (set2.asInstanceOf[Set[Any]].foreach(mem2=>resultSet.add((mem1, mem2)))))
             Value(resultSet)
         }
+
+        case default => Value(InvalidSyntax)
 
       }
     }
