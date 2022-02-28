@@ -8,7 +8,9 @@ trait IncompleteBinding[T <: IncompleteBinding[T]](name: String,
 { self: T =>
 
   def toValue(value: Any): Unit
-
+  
+  def getValue: Value = value
+  
   def Insert(value: Any): Value
 
   def Insert(values: Tuple): Value

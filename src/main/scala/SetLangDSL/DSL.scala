@@ -1,13 +1,13 @@
 package SetLangDSL
 
-import SetLangDSL.DSLCLass.ClassContext
-import SetLangDSL.DSLScope.ExecutionContext
+import SetLangDSL.DSLClass.ClassDefinition
+import SetLangDSL.DSLScope.ScopeDefinition
 
 object DSL {
   //Creating a global scope
   //This acts as an entry point for the DSL
-  def Scope(f: ExecutionContext => Unit): ExecutionContext = {
-    val scopeDefinition = new ExecutionContext(null)
+  def Scope(f: ScopeDefinition => Unit): ScopeDefinition = {
+    val scopeDefinition = new ScopeDefinition(null)
     f(scopeDefinition)
     scopeDefinition
   }

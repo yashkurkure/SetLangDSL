@@ -1,27 +1,29 @@
-package SetLangDSL.DSLMethod
+package SetLangDSL.DSLClass
 
 //Scala imports
-import SetLangDSL.DSL.accessSpecifier
-import SetLangDSL.Skeleton.IncompleteBinding
-
 import scala.collection.mutable
 
-//DSL imports
+// DSL imports
+import SetLangDSL.DSL.accessSpecifier
 import SetLangDSL.Value
+import SetLangDSL.Skeleton.IncompleteBinding
 
-class MethodIncompleteBinding(
-                              name: String,
-                              bindingMap: mutable.Map[String, Value],
-                              value: Value = null)
-  extends IncompleteBinding[MethodIncompleteBinding](name, bindingMap, value) {
-
-  /*  override def toValue(value:Any): Unit = {
-      accessBindingMap += (name->access)
-      bindingMap += (name->Value(value))
-    }*/
+class ClassIncompleteBinding(
+                              access: accessSpecifier, 
+                              name: String, 
+                              bindingMap: mutable.Map[String, Value], 
+                              accessBindingMap : mutable.Map[String, accessSpecifier],
+                              value: Value = null) 
+  extends IncompleteBinding[ClassIncompleteBinding](name, bindingMap, value) {
+  
+/*  override def toValue(value:Any): Unit = {
+    accessBindingMap += (name->access)
+    bindingMap += (name->Value(value))
+  }*/
 
   def toValue(value: Any): Unit = {
-    bindingMap += (name->Value(value))
+    bindingMap += (name-> Value(value))
+    accessBindingMap += (name -> access)
   }
 
   def Insert(value: Any): Value = {
@@ -99,5 +101,5 @@ class MethodIncompleteBinding(
     else
       null
   }
-
+  
 }

@@ -6,9 +6,9 @@ import scala.collection.mutable
 //DSL imports
 import SetLangDSL.Value
 
-trait Bindings[T <: Bindings[T]](context: Context[_]) { self: T =>
+trait Bindings[T <: Bindings[T]](context: Definition[_]) { self: T =>
   
-  val bindingMap: mutable.Map[String, Value]
+  protected val bindingMap: mutable.Map[String, Value]
   
   def Variable(name: String): IncompleteBinding[_]
   

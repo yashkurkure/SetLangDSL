@@ -1,8 +1,10 @@
 package SetLangDSL
-import SetLangDSL.DSLScope.ExecutionContext
 
 import scala.collection.mutable
-
+import SetLangDSL.DSLScope._
+import DSLClass._
+import DSLScope._
+import DSLMethod._
 
 class Value(value: Any)
 {
@@ -15,7 +17,7 @@ class Value(value: Any)
   }
 
   def getValue:Any = value
-  
+
 
   // This insert adds 1 element to an existing set
   def Insert(value: Any):Value = {
@@ -75,15 +77,42 @@ class Value(value: Any)
       null
   }
 
+
   def checkIfTypeScope: Boolean = {
     //println("checkType")
-    if this.getValue.isInstanceOf[ExecutionContext] then true
+    if this.getValue.isInstanceOf[ScopeDefinition] then true
     else false
   }
 
   def checkIfTypeSet: Boolean = {
     if this.getValue.isInstanceOf[mutable.Set[Any]] then true
     else false
+  }
+
+  def checkIfTypeClassDefinition: Boolean = {
+    if this.getValue.isInstanceOf[ClassDefinition] then true
+    else
+      false
+  }
+  
+  def checkIfTypeClassInstance: Boolean = {
+    if this.getValue.isInstanceOf[ClassInstance] then true
+    else
+      false
+    
+  }
+
+  def checkIfTypeMethodDefinition: Boolean = {
+    if this.getValue.isInstanceOf[MethodDefinition] then true
+    else
+      false
+  }
+
+  def checkIfTypeMethodContext: Boolean = {
+    if this.getValue.isInstanceOf[MethodContext] then true
+    else
+      false
+
   }
 
 

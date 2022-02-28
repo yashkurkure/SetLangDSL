@@ -18,20 +18,19 @@ object MyMain
 
         //Creating class constructor
         c.Constructor{t=>
-          t.Parameters("whichNumber")
+
         }
 
         //Creating class methods
         // getConstant returns the constant 100
-        c.Method(Public, "getConstant", m=>{
+        c.Method(Public, "getConstant", Parameters(),m=>{
           Value(100)
         })
 
         //getTheNumber returns:
         // classVariable publicNumber1 if whichNumber == 1
         // classVariable publicNumber2 if whichNumber == 2
-        c.Method(Public, "getTheNumber", m=>{
-          m.Parameters("whichNumber")
+        c.Method(Public, "getTheNumber", Parameters("whichNumber"), m=>{
 
           // The advantage of using an hierarchy of methods and classes for the DSL
           // The user is able to use the if then else construct of scala
@@ -41,29 +40,13 @@ object MyMain
             c.Variable("publicNumber2")
         })
 
-
-        //getClassNumber returns:
-        // classVariable publicNumber1 if class variable whichNumber == 1
-        // classVariable publicNumber2 if class variable whichNumber == 2
-        c.Method(Public, "getClassNumber", m=>{
-
-          // The advantage of using an hierarchy of methods and classes for the DSL
-          // The user is able to use the if then else construct of scala
-          if c.Variable("whichNumber").equals(Value(1)) then
-            c.Variable("publicNumber1")
-          else
-            c.Variable("publicNumber2")
-        })
-
       })
 
       //Creating a class object
-      //g.Assign.Variable("myObject").NewObject("number").withParameters(Value(1))
+      g.Assign.Variable("myObject").NewObject("numbers")
 
       //Executing a method of a class object
-      //g.Assign.Variable("number1").ExecuteMethod("getTheNumber").withParameters(Value(2))
-      //g.Assign.Variable("number1").ExecuteMethod("getTheNumber").withParameters()
-
+      g.Assign.Variable("result1").Method("getTheNumber", g.Variable("myObject")).withParameters(Value(2)).Execute
 
     }
 
