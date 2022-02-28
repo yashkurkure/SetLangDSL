@@ -7,9 +7,9 @@ import scala.collection.mutable
 import SetLangDSL.Value
 import SetLangDSL.DSLScope.ExecutionContext
 import SetLangDSL.DSLScope.ExecutionBindings
-import SetLangDSL.DSLScope.IncompleteBinding
+import SetLangDSL.DSLScope.ExecutionIncompleteBinding
 
 class MethodIncompleteBinding(name: String, bindingMap: mutable.Map[String, Value], value: Value = null) 
-  extends IncompleteBinding (name, bindingMap, value){
+  extends ExecutionIncompleteBinding (name, bindingMap, value){
 
 }

@@ -6,7 +6,7 @@ import scala.collection.mutable
 // DSL imports
 import SetLangDSL.DSL.accessSpecifier
 import SetLangDSL.Value
-import SetLangDSL.DSLScope.IncompleteBinding
+import SetLangDSL.DSLScope.ExecutionIncompleteBinding
 
 class ClassIncompleteBinding(
                               access: accessSpecifier, 
@@ -14,7 +14,7 @@ class ClassIncompleteBinding(
                               bindingMap: mutable.Map[String, Value], 
                               accessBindingMap : mutable.Map[String, accessSpecifier],
                               value: Value = null) 
-  extends IncompleteBinding(name, bindingMap, value) {
+  extends ExecutionIncompleteBinding(name, bindingMap, value) {
   
   override def toValue(value:Any): Unit = {
     accessBindingMap += (name->access)

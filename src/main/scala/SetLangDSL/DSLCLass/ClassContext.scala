@@ -1,7 +1,7 @@
 package SetLangDSL.DSLCLass
 
 // Imports from Scala
-import SetLangDSL.DSLScope.ExecutionBindings
+import SetLangDSL.Skeleton.Context
 
 import scala.collection.mutable
 
@@ -10,23 +10,24 @@ import SetLangDSL.Value
 import SetLangDSL.DSL.accessSpecifier
 import SetLangDSL.DSLMethod.MethodContext
 import SetLangDSL.DSLScope.ExecutionContext
+import SetLangDSL.DSLScope.ExecutionBindings
 
-class ClassContext(name: String) 
+class ClassContext(name: String)
   extends ExecutionContext(null)
 {
   private val classBindings = new ClassBindings(this)
-  
+
   //Use linked hashSet so the order of the parameters is preserved
   private val classParameters = mutable.LinkedHashSet.empty[String]
-  
+
   def Constructor(f: ClassContext=>Unit): Unit = {
     f(this)
   }
-  
+
   def Parameters(params: String*): Unit = {
     params.foreach(param=>classParameters.add(param))
   }
-  
+
   def Method(access: accessSpecifier, name: String, f: MethodContext => Value) : Unit ={
     //create the method
     //def methodDefinition = new SetLangMethod()

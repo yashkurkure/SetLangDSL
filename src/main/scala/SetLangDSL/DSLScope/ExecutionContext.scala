@@ -1,6 +1,8 @@
 package SetLangDSL.DSLScope
 
 // Imports from Scala
+import SetLangDSL.Skeleton.Context
+
 import scala.annotation.targetName
 import scala.collection.mutable
 
@@ -99,14 +101,13 @@ class ExecutionContext(parent: ExecutionContext)
    *
    * The named child scope can be accessed later using Scope(name:String)
    * */
-  @targetName("NamedScope")
-  def Scope(f: ExecutionContext => String): Unit = {
+  def Scope(scopeName: String, f: ExecutionContext => Unit): Unit = {
     println("Creating Named Scope")
     //create a execution context
     val scope = new ExecutionContext(this)
 
     //get the name of the execution context, to create a binding for it
-    val scopeName = f(scope)
+    f(scope)
 
     //create a binding for the context, so that it's bindings can be accessed later
     this.Assign.Variable(scopeName).toValue(scope)

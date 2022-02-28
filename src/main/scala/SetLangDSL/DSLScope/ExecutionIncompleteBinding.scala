@@ -11,7 +11,7 @@ import scala.collection.mutable
  * A binding will only be created if the "name" is not already bound to something
  *
  * */
-class IncompleteBinding(name: String, bindingMap: mutable.Map[String, Value], value: Value = null)
+class ExecutionIncompleteBinding(name: String, bindingMap: mutable.Map[String, Value], value: Value = null)
 {
   def toValue(value: Any): Unit = {
     bindingMap += (name -> Value(value))

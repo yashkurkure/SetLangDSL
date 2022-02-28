@@ -1,9 +1,9 @@
 package SetLangDSL.DSLScope
 
+import SetLangDSL.Skeleton.Bindings
 import SetLangDSL.Value
 
 import scala.collection.mutable
-
 
 /**
  * ExecutionBindings
@@ -16,20 +16,20 @@ class ExecutionBindings(context: ExecutionContext)
   protected val bindingMap = mutable.Map.empty[String, Value]
   
 
-  def Variable(name: String): IncompleteBinding = {
+  def Variable(name: String): ExecutionIncompleteBinding = {
     if(bindingMap.contains(name)) then
       //println("Binding found for name: " + name)
-      new IncompleteBinding(name, bindingMap, bindingMap(name))
+      new ExecutionIncompleteBinding(name, bindingMap, bindingMap(name))
     else
       //println("Creating incomplete binding for: " + name)
-      new IncompleteBinding(name, bindingMap)
+      new ExecutionIncompleteBinding(name, bindingMap)
   }
 
-  def Scope(name: String): IncompleteBinding = {
+  def Scope(name: String): ExecutionIncompleteBinding = {
     if(bindingMap.contains(name)) then
-      new IncompleteBinding(name, bindingMap, bindingMap(name))
+      new ExecutionIncompleteBinding(name, bindingMap, bindingMap(name))
     else
-      new IncompleteBinding(name, bindingMap)
+      new ExecutionIncompleteBinding(name, bindingMap)
   }
   
 }

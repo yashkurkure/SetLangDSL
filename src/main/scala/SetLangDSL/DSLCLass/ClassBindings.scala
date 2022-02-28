@@ -4,7 +4,7 @@ package SetLangDSL.DSLCLass
 import scala.collection.mutable
 
 // DSL imports
-import SetLangDSL.DSLScope.{ExecutionBindings, IncompleteBinding}
+import SetLangDSL.DSLScope.{ExecutionBindings, ExecutionIncompleteBinding}
 import SetLangDSL.DSL.accessSpecifier
 import SetLangDSL.DSL._
 class ClassBindings(classContext: ClassContext) extends ExecutionBindings(classContext)
