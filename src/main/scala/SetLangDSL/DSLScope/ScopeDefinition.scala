@@ -33,6 +33,11 @@ class ScopeDefinition(parent: ScopeDefinition)
     // returning null is the same as the binding not being found
       null
   }
+  
+  def ExecuteMacro(macroName: String, variable: Value): Unit = {
+    val macroBody = this.Variable(macroName).getValue.asInstanceOf[Value=>Unit]
+    macroBody(variable)
+  }
 
   @targetName("Create Anonymous Scope")
   def Scope(f:ScopeDefinition=>Unit): Unit = {

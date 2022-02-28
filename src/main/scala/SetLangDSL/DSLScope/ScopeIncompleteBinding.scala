@@ -47,6 +47,10 @@ class ScopeIncompleteBinding(name: String,
     else
       bindingMap += (name -> Value(value))
   }
+  
+  def toMacro(f: Value=>Unit) = {
+    bindingMap +=(name -> Value(f))
+  }
 
   def Insert(value: Any): Value = {
     val set = mutable.Set.empty[Any]

@@ -17,7 +17,7 @@ class Value(value: Any)
   }
 
   def getValue:Any = value
-
+  
 
   // This insert adds 1 element to an existing set
   def Insert(value: Any):Value = {
@@ -113,6 +113,12 @@ class Value(value: Any)
     else
       false
 
+  }
+  
+  def checkIfTypeMacro: Boolean = {
+    if this.getValue.isInstanceOf[Value=>Unit] then true
+    else
+      false
   }
 
 

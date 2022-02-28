@@ -5,7 +5,17 @@ object MyMain
   @main def main(): Unit = {
     println("Main method")
 
-    // Global Scope
+
+    Scope{g=>
+      g.Assign.Variable("mySet").Insert("a","b","c")
+      g.Assign.Variable("myMacro").toMacro(v=>{
+        v.Delete("b")
+      })
+      g.ExecuteMacro("myMacro", g.Variable("mySet"))
+      println(g.Variable("mySet").getValue)
+    }
+
+    /*// Global Scope
     Scope{g=>
 
       g.ClassDef("numbers", c=>{
@@ -48,7 +58,7 @@ object MyMain
       //Executing a method of a class object
       g.Assign.Variable("result1").Method("getTheNumber", g.Variable("myObject")).withParameters(Value(2)).Execute
 
-    }
+    }*/
 
 
 
