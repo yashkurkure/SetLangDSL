@@ -10,7 +10,7 @@ class Value(value: Any)
 {
 
   def equals(value: Value) : Boolean = {
-    if(this.getValue == value.getValue) then
+    if this.getValue == value.getValue then
       true
     else
       false
@@ -25,10 +25,10 @@ class Value(value: Any)
     if this.checkIfTypeSet then
       //println("Yay insert is working")
       val set = value.asInstanceOf[mutable.Set[Any]]
-      if(value.isInstanceOf[Value])
-        set.add(value.asInstanceOf[Value].getValue)
-      else
-        set.add(value)
+      value match {
+        case value1: Value => set.add(value1.getValue)
+        case _ => set.add(value)
+      }
       this
     else
     //println("Insert went into else:(")
@@ -41,12 +41,10 @@ class Value(value: Any)
     if this.checkIfTypeSet then
       //println("Yay insert is working")
       val set = value.asInstanceOf[mutable.Set[Any]]
-      values.productIterator.foreach(x=>{
-        if(x.isInstanceOf[Value])
-          set.add(x.asInstanceOf[Value].getValue)
-        else
-          set.add(x)
-      })
+      values.productIterator.foreach {
+        case value1: Value => set.add(value1.getValue)
+        case x => set.add(x)
+      }
       this
     else
       //println("Insert went into else:(")
@@ -57,10 +55,10 @@ class Value(value: Any)
   def Delete(setMember: Any): Value = {
     if this.checkIfTypeSet then
       val set = value.asInstanceOf[mutable.Set[Any]]
-      if(setMember.isInstanceOf[Value])
-        set.remove(setMember.asInstanceOf[Value].getValue)
-      else
-        set.remove(setMember)
+      setMember match {
+        case value1: Value => set.remove(value1.getValue)
+        case _ => set.remove(setMember)
+      }
       this
     else
       null
@@ -69,10 +67,10 @@ class Value(value: Any)
   def Check(setMember: Any): Value = {
     if this.checkIfTypeSet then
       val set = value.asInstanceOf[mutable.Set[Any]]
-      if(setMember.isInstanceOf[Value])
-        if set.contains(setMember.asInstanceOf[Value].getValue) then Value(true) else Value(false)
-      else
-        if set.contains(setMember) then Value(true) else Value(false)
+      setMember match {
+        case value1: Value => if set.contains(value1.getValue) then Value(true) else Value(false)
+        case _ => if set.contains(setMember) then Value(true) else Value(false)
+      }
     else
       null
   }

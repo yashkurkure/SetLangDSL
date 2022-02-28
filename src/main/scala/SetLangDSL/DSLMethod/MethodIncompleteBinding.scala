@@ -26,10 +26,10 @@ class MethodIncompleteBinding(
 
   def Insert(value: Any): Value = {
     val set = mutable.Set.empty[Any]
-    if(value.isInstanceOf[Value])
-      set.add(value.asInstanceOf[Value].getValue)
-    else
-      set.add(value)
+    value match {
+      case value1: Value => set.add(value1.getValue)
+      case _ => set.add(value)
+    }
     val asInstanceOfType = Value(set)
     bindingMap += (name -> Value(set))
     asInstanceOfType
@@ -37,12 +37,10 @@ class MethodIncompleteBinding(
 
   def Insert(values: Tuple): Value = {
     val set = mutable.Set.empty[Any]
-    values.productIterator.foreach(x=>{
-      if(x.isInstanceOf[Value])
-        set.add(x.asInstanceOf[Value].getValue)
-      else
-        set.add(x)
-    })
+    values.productIterator.foreach {
+      case value1: Value => set.add(value1.getValue)
+      case x => set.add(x)
+    }
     val asInstanceOfType = Value(set)
     bindingMap += (name -> Value(set))
     asInstanceOfType

@@ -61,14 +61,10 @@ class ClassDefinition(name: String, parent: ClassDefinition)
   }
 
   @targetName("Create Anonymous Scope")
-  def Scope(f:ScopeDefinition=>Unit): Unit = {
-    null
-  }
+  def Scope(f:ScopeDefinition=>Unit): Unit = null
 
   @targetName("Create Named Scope")
-  def Scope(scopeName: String, f: ScopeDefinition => Unit): Unit = {
-    null
-  }
+  def Scope(scopeName: String, f: ScopeDefinition => Unit): Unit = null
 
   @targetName("Get Named Scope")
   def Scope(scopeName: String): ClassDefinition = {
