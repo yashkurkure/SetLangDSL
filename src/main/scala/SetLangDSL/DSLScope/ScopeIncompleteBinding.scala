@@ -6,6 +6,7 @@ import SetLangDSL.DSLScope._
 import SetLangDSL.Skeleton.{Bindings, Definition, IncompleteBinding}
 import SetLangDSL.Value
 import SetLangDSL.DSL._
+import SetLangDSL.DSLSetOperations.*
 
 import scala.collection.mutable
 
@@ -77,55 +78,54 @@ class ScopeIncompleteBinding(name: String,
   }
 
   def Union(set1AsValue: Value, set2AsValue: Value): Value = {
-    if set1AsValue.checkIfTypeSet && set2AsValue.checkIfTypeSet then
-      val resultSet = set1AsValue.getValue.asInstanceOf[mutable.Set[Any]] | set2AsValue.getValue.asInstanceOf[mutable.Set[Any]]
-      bindingMap += (name->Value(resultSet))
-      Value(resultSet)
-    else
+    val resultSet = SetUnion(set1AsValue, set2AsValue)
+
+    if(resultSet == null) then
       null
+    else
+      bindingMap += (name->Value(resultSet))
+    Value(resultSet)
   }
 
   def Intersection(set1AsValue: Value, set2AsValue: Value): Value = {
-    if set1AsValue.checkIfTypeSet && set2AsValue.checkIfTypeSet then
-      val resultSet = set1AsValue.getValue.asInstanceOf[mutable.Set[Any]] & set2AsValue.getValue.asInstanceOf[mutable.Set[Any]]
-      bindingMap += (name->Value(resultSet))
-      Value(resultSet)
-    else
+    val resultSet = SetIntersection(set1AsValue, set2AsValue)
+
+    if(resultSet == null) then
       null
+    else
+      bindingMap += (name->Value(resultSet))
+    Value(resultSet)
   }
 
   def Difference(set1AsValue: Value, set2AsValue: Value): Value = {
-    if set1AsValue.checkIfTypeSet && set2AsValue.checkIfTypeSet then
-      val resultSet = set1AsValue.getValue.asInstanceOf[mutable.Set[Any]] &~ set2AsValue.getValue.asInstanceOf[mutable.Set[Any]]
-      bindingMap += (name->Value(resultSet))
-      Value(resultSet)
-    else
+    val resultSet = SetDifference(set1AsValue, set2AsValue)
+
+    if(resultSet == null) then
       null
+    else
+      bindingMap += (name->Value(resultSet))
+    Value(resultSet)
   }
 
   def SymmetricDifference(set1AsValue: Value, set2AsValue: Value): Value = {
-    if set1AsValue.checkIfTypeSet && set2AsValue.checkIfTypeSet then
-      val resultSet = (set1AsValue.getValue.asInstanceOf[mutable.Set[Any]] | set2AsValue.getValue.asInstanceOf[mutable.Set[Any]]) &~ (set1AsValue.getValue.asInstanceOf[mutable.Set[Any]] & set2AsValue.getValue.asInstanceOf[mutable.Set[Any]])
-      bindingMap += (name->Value(resultSet))
-      Value(resultSet)
-    else
+    val resultSet = SetSymmetricDifference(set1AsValue, set2AsValue)
+
+    if(resultSet == null) then
       null
+    else
+      bindingMap += (name->Value(resultSet))
+    Value(resultSet)
   }
 
   def CartesianProduct(set1AsValue: Value, set2AsValue: Value): Value = {
-    if set1AsValue.checkIfTypeSet && set2AsValue.checkIfTypeSet then
-      val set1 = set1AsValue.getValue.asInstanceOf[mutable.Set[Any]]
-      val set2 = set2AsValue.getValue.asInstanceOf[mutable.Set[Any]]
-      val resultSet = mutable.Set.empty[Any]
-      if set1.isEmpty || set2.isEmpty then
-        Value(resultSet)
-      else
-        set1.foreach(mem1=>set2.foreach(mem2=>resultSet.add((mem1, mem2))))
-        Value(resultSet)
+
+    val resultSet = SetCartesianProduct(set1AsValue, set2AsValue)
+
+    if(resultSet == null) then
+      null
+    else
       bindingMap += (name->Value(resultSet))
       Value(resultSet)
-    else
-      null
   }
 
 

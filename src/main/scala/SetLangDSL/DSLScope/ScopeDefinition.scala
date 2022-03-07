@@ -41,7 +41,7 @@ class ScopeDefinition(parent: ScopeDefinition)
 
   @targetName("Create Anonymous Scope")
   def Scope(f:ScopeDefinition=>Unit): Unit = {
-    println("Creating Anonymous Scope")
+    //println("Creating Anonymous Scope")
     //create a execution context
     val scope = new ScopeDefinition(this)
     //execute the user's operations of the context
@@ -50,7 +50,7 @@ class ScopeDefinition(parent: ScopeDefinition)
 
   @targetName("Create Named Scope")
   def Scope(scopeName: String, f:ScopeDefinition => Unit): Unit = {
-    println("Creating Named Scope")
+    //println("Creating Named Scope")
     //create a execution context
     val scope = new ScopeDefinition(this)
 
@@ -69,7 +69,7 @@ class ScopeDefinition(parent: ScopeDefinition)
     //if the value of the binding is not null, then the binding was found
     if incompleteBinding.getValue != null then
       //return the value as an execution context
-      println("Found")
+      //println("Found")
       val valueAsType = incompleteBinding.getValue
       //Check if the variable is bound to a Scope(ExecutionContext)
       if valueAsType.checkIfTypeScope then
@@ -80,7 +80,7 @@ class ScopeDefinition(parent: ScopeDefinition)
     //Search the parent if the binding is not found
       parent.Scope(scopeName)
     else
-      println("Not Found")
+      //println("Not Found")
       //if the parent is null, we have reached the global scope and the binding was not found
       //return null as the binding was not found
       null

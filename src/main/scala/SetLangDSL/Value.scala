@@ -83,7 +83,7 @@ class Value(value: Any)
   }
 
   def checkIfTypeSet: Boolean = {
-    if this.getValue.isInstanceOf[mutable.Set[Any]] then true
+    if this.getValue.isInstanceOf[mutable.Set[_]] then true
     else false
   }
 
@@ -114,7 +114,7 @@ class Value(value: Any)
   }
   
   def checkIfTypeMacro: Boolean = {
-    if this.getValue.isInstanceOf[Value=>Unit] then true
+    if this.getValue.isInstanceOf[_=>_] then true
     else
       false
   }
