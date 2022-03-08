@@ -13,6 +13,18 @@ class MacroTests extends AnyFlatSpec with Matchers{
    * Declaring Macros
    * 
    * */
+  it should "Declare a macro" in{
+    /*
+    Scope{g=>
+      
+      g.Assign.Variable("DelteMacro").toMacro({
+        
+      })
+      
+    }*/
+    
+    
+  }
   
   
   

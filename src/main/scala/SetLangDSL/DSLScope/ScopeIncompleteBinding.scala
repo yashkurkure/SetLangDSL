@@ -54,78 +54,73 @@ class ScopeIncompleteBinding(name: String,
   }
 
   def Insert(value: Any): Value = {
-    val set = mutable.Set.empty[Any]
-    if(value.isInstanceOf[Value])
-      set.add(value.asInstanceOf[Value].getValue)
+    val set = SetInsert(value)
+    if set == null then
+      null
     else
-      set.add(value)
-    val asInstanceOfType = Value(set)
-    bindingMap += (name -> Value(set))
-    asInstanceOfType
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
   def Insert(values: Tuple): Value = {
-    val set = mutable.Set.empty[Any]
-    values.productIterator.foreach(x=>{
-      if(x.isInstanceOf[Value])
-        set.add(x.asInstanceOf[Value].getValue)
-      else
-        set.add(x)
-    })
-    val asInstanceOfType = Value(set)
-    bindingMap += (name -> Value(set))
-    asInstanceOfType
+    val set = SetInsert(values)
+    if set == null then
+      null
+    else
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
   def Union(set1AsValue: Value, set2AsValue: Value): Value = {
-    val resultSet = SetUnion(set1AsValue, set2AsValue)
-
-    if(resultSet == null) then
+    val set = SetUnion(set1AsValue, set2AsValue)
+    if set == null then
       null
     else
-      bindingMap += (name->Value(resultSet))
-    Value(resultSet)
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
   def Intersection(set1AsValue: Value, set2AsValue: Value): Value = {
-    val resultSet = SetIntersection(set1AsValue, set2AsValue)
-
-    if(resultSet == null) then
+    val set = SetIntersection(set1AsValue, set2AsValue)
+    if set == null then
       null
     else
-      bindingMap += (name->Value(resultSet))
-    Value(resultSet)
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
   def Difference(set1AsValue: Value, set2AsValue: Value): Value = {
-    val resultSet = SetDifference(set1AsValue, set2AsValue)
-
-    if(resultSet == null) then
+    val set = SetDifference(set1AsValue, set2AsValue)
+    if set == null then
       null
     else
-      bindingMap += (name->Value(resultSet))
-    Value(resultSet)
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
   def SymmetricDifference(set1AsValue: Value, set2AsValue: Value): Value = {
-    val resultSet = SetSymmetricDifference(set1AsValue, set2AsValue)
-
-    if(resultSet == null) then
+    val set = SetSymmetricDifference(set1AsValue, set2AsValue)
+    if set == null then
       null
     else
-      bindingMap += (name->Value(resultSet))
-    Value(resultSet)
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
   def CartesianProduct(set1AsValue: Value, set2AsValue: Value): Value = {
-
-    val resultSet = SetCartesianProduct(set1AsValue, set2AsValue)
-
-    if(resultSet == null) then
+    val set = SetCartesianProduct(set1AsValue, set2AsValue)
+    if set == null then
       null
     else
-      bindingMap += (name->Value(resultSet))
-      Value(resultSet)
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
 

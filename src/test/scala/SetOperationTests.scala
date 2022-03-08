@@ -49,6 +49,7 @@ class SetOperationTests extends AnyFlatSpec with Matchers {
 
     //To access the Variable "set1" from outside the defined scope
     val actualValue = globalScope.Variable("set1").getValue.asInstanceOf[mutable.Set[Any]]
+    println(actualValue)
     // Test the actual value
     val expectedValue = mutable.Set[Any]("a","b","c")
     compareValues(actualValue, expectedValue) shouldBe true
