@@ -30,3 +30,4 @@ project/target/
 target/
 .scala_dependencies
 .worksheet
+.tasty
