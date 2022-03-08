@@ -31,3 +31,6 @@ target/
 .scala_dependencies
 .worksheet
 .tasty
+.swp
+.history3
+
