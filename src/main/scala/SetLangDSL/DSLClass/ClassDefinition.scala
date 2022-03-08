@@ -2,7 +2,6 @@ package SetLangDSL.DSLClass
 
 // Imports from Scala
 import SetLangDSL.DSLScope.ScopeDefinition
-import SetLangDSL.Parameters
 import SetLangDSL.Skeleton.Definition
 
 import scala.annotation.targetName
@@ -10,11 +9,11 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 // Imports from DSL
-import SetLangDSL.Value
 import SetLangDSL.DSL.accessSpecifier
 import SetLangDSL.DSLScope.ScopeDefinition
 import SetLangDSL.DSLMethod.MethodDefinition
 import SetLangDSL.Skeleton._
+import SetLangDSL.DSL.*
 
 
 class ClassDefinition(name: String, parent: ClassDefinition)

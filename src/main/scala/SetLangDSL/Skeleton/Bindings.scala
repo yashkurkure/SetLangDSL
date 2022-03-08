@@ -1,10 +1,10 @@
 package SetLangDSL.Skeleton
+import SetLangDSL.DSL.*
 
 //Scala imports
 import scala.collection.mutable
 
 //DSL imports
-import SetLangDSL.Value
 
 trait Bindings[T <: Bindings[T]](context: Definition[_]) { self: T =>
   

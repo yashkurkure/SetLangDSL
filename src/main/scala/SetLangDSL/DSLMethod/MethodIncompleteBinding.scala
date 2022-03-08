@@ -7,7 +7,7 @@ import SetLangDSL.Skeleton.IncompleteBinding
 import scala.collection.mutable
 
 //DSL imports
-import SetLangDSL.Value
+import SetLangDSL.DSL.*
 
 class MethodIncompleteBinding(
                               name: String,

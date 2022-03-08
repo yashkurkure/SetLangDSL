@@ -2,9 +2,9 @@ package SetLangDSL.DSLScope
 
 import SetLangDSL.DSLClass.{ClassDefinition, ClassInstance}
 import SetLangDSL.Skeleton.{Bindings, Definition, IncompleteBinding}
-import SetLangDSL.Value
 
 import scala.annotation.targetName
+import SetLangDSL.DSL.*
 
 class ScopeDefinition(parent: ScopeDefinition)
   extends Definition[ScopeDefinition](parent)

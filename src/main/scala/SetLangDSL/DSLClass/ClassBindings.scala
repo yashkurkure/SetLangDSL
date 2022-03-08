@@ -1,7 +1,6 @@
 package SetLangDSL.DSLClass
 
 // Scala imports
-import SetLangDSL.Value
 
 import scala.collection.mutable
 

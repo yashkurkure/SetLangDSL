@@ -5,8 +5,8 @@ import scala.collection.mutable
 
 // DSL imports
 import SetLangDSL.DSL.accessSpecifier
-import SetLangDSL.Value
 import SetLangDSL.Skeleton.IncompleteBinding
+import SetLangDSL.DSL.*
 
 class ClassIncompleteBinding(
                               access: accessSpecifier, 

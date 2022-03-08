@@ -1,6 +1,6 @@
 package SetLangDSL.Skeleton
 import SetLangDSL.DSLScope.ScopeDefinition
-import SetLangDSL.Value
+import SetLangDSL.DSL.*
 
 import scala.annotation.targetName
 trait Definition[T <: Definition[T]](parent: T) { self: T =>

@@ -2,8 +2,9 @@ package SetLangDSL.DSLScope
 
 //Scala imports
 import SetLangDSL.Skeleton.{Bindings, Definition, IncompleteBinding}
-import SetLangDSL.Value
 import scala.collection.mutable
+
+import SetLangDSL.DSL.*
 
 class ScopeBindings(context: ScopeDefinition)
   extends Bindings[ScopeBindings](context)

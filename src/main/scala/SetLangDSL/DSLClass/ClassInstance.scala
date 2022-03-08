@@ -1,8 +1,10 @@
 package SetLangDSL.DSLClass
 import scala.collection.mutable
-import SetLangDSL.Value
 
 import scala.collection.mutable.ArrayBuffer
+
+import SetLangDSL.DSL.*
+
 class ClassInstance(classDefinition: ClassDefinition) {
   
   def getDefinition: ClassDefinition = classDefinition

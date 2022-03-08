@@ -2,8 +2,8 @@ package SetLangDSL.DSLMethod
 
 import SetLangDSL.DSLMethod.*
 import SetLangDSL.DSLClass.*
+import SetLangDSL.DSL.*
 import SetLangDSL.DSLScope.{ScopeBindings, ScopeDefinition, ScopeIncompleteBinding}
-import SetLangDSL.Value
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer

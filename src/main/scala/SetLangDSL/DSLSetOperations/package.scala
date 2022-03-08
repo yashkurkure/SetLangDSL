@@ -3,6 +3,8 @@ package SetLangDSL
 // Scala Imports
 import scala.collection.mutable
 
+import SetLangDSL.DSL.*
+
 package object DSLSetOperations
 {
 

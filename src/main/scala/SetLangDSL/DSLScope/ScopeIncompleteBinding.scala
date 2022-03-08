@@ -4,7 +4,6 @@ import SetLangDSL.DSLClass._
 import SetLangDSL.DSLMethod._
 import SetLangDSL.DSLScope._
 import SetLangDSL.Skeleton.{Bindings, Definition, IncompleteBinding}
-import SetLangDSL.Value
 import SetLangDSL.DSL._
 import SetLangDSL.DSLSetOperations.*
 
