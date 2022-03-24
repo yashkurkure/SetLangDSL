@@ -20,6 +20,7 @@ out
 .lib/
 dist/*
 target/
+target/*
 bin/
 libexec/
 lib_managed/
