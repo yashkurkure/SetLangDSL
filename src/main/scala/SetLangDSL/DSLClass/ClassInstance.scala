@@ -54,8 +54,17 @@ class ClassInstance (classDefinition: ClassDefinition){
 
 
   /**
-   * We must load the bindings from the class definition into the class instance.
-   *  before the instance is used to access fields and methods.
+   * constructorParameters
+   *
+   * Contains the names of the constructors parameters
+   * */
+  val constructorParameters: ArrayBuffer[String] = new ArrayBuffer[String]
+
+
+  /**
+   * We must load the bindings and constructor parameters from the class
+   *  definition into the class instance. before the instance is used to
+   *  access fields and methods.
    * */
   // Load the bindings
   classDefinition.bindings.bindingMap.foreach((s,v)=>{
@@ -66,6 +75,9 @@ class ClassInstance (classDefinition: ClassDefinition){
   classDefinition.bindings.accessBindingMap.foreach((s,a)=>{
     instanceAccessBindings += (s->a)
   })
+
+  // Load the constructor parameters
+  classDefinition.getConstructorParameters.foreach(s=>constructorParameters.addOne(s))
 
 
   /**
@@ -125,8 +137,11 @@ class ClassInstance (classDefinition: ClassDefinition){
    * TODO: Inspect working
    * */
   def withParameters(value: Any): Unit = {
-    val parameters = classDefinition.parameters
-    instanceBindings += (parameters(0) -> Value(value))
+    if constructorParameters.size == 1 then
+      instanceBindings += (constructorParameters(0) -> Value(value))
+      instanceAccessBindings += (constructorParameters(0)->Public)
+    else
+      throw RuntimeException("Extra/Less parameters passed to class constructor")
   }
 
   /**
@@ -137,10 +152,12 @@ class ClassInstance (classDefinition: ClassDefinition){
   def withParameters(values: Tuple): Unit = {
     val valuesAsArray = new ArrayBuffer[Any]
     values.productIterator.foreach(value=>valuesAsArray.addOne(value))
-    val parameters = classDefinition.parameters
-    if(parameters.size == valuesAsArray.size) then
-      for( i <- 0 to parameters.size){
-        instanceBindings += (parameters(i)->Value(valuesAsArray(i)))
+    if(constructorParameters.size == valuesAsArray.size) then
+      for( i <- 0 to constructorParameters.size - 1){
+        instanceBindings += (constructorParameters(i)->Value(valuesAsArray(i)))
+        instanceAccessBindings += (constructorParameters(i)->Public)
       }
+    else
+      throw RuntimeException("Extra/Less parameters passed to class constructor")
   }
 }

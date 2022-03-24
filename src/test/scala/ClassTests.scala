@@ -75,7 +75,8 @@ class ClassTests extends AnyFlatSpec with Matchers {
       }
       g.Variable("A_obj").getField("x")
 
-      an [Exception] should be thrownBy g.Variable("A_obj").getField("x")
+      // Accessing a private/protected or not bound name will return null
+      g.Variable("A_obj").getField("x") shouldBe null
 
     }
 
@@ -89,19 +90,50 @@ class ClassTests extends AnyFlatSpec with Matchers {
   //test 4
   it should "Create a class with a parameterized constructor" in {
 
+    val globalScope = Scope{g=>
+
+      g.ClassDef("A", {c=>
+        c.Constructor(Parameters("param1"), c=>{})
+      })
+
+      g.Assign.Variable("A_obj").toNewObjectOf("A").withParameters(1)
+
+      g.Variable("A_obj").getField("param1").getValue shouldBe 1
+
+    }
+
+
   }
 
   //test 5
+  it should "Create a class with a parameterizes constructor (multiple parameters version)" in {
+
+    val globalScope = Scope{g=>
+
+      g.ClassDef("A", {c=>
+        c.Constructor(Parameters("param1", "param2", "param3"), c=>{})
+      })
+
+      g.Assign.Variable("A_obj").toNewObjectOf("A").withParameters(1,2,3)
+
+      g.Variable("A_obj").getField("param1").getValue shouldBe 1
+      g.Variable("A_obj").getField("param2").getValue shouldBe 2
+      g.Variable("A_obj").getField("param3").getValue shouldBe 3
+
+    }
+  }
+
+  //test
   it should "Create a private method" in {
 
   }
 
-  //test 6
+  //test
   it should "Create a protected method" in {
 
   }
 
-  //test 7
+  //test
   it should "Create a "
 
 }
