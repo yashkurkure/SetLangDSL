@@ -3,7 +3,7 @@ import org.scalatest.matchers.should.Matchers
 import scala.collection.mutable
 import SetLangDSL.DSL.*
 
-class TestDSLClass extends AnyFlatSpec with Matchers {
+class ClassTests extends AnyFlatSpec with Matchers {
   behavior of "Set operations in setLang"
 
   // Function to compare values

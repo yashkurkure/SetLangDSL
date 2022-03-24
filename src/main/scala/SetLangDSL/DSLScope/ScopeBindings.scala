@@ -1,14 +1,10 @@
 package SetLangDSL.DSLScope
 
-//Scala imports
-import SetLangDSL.Skeleton.{Bindings, Definition, IncompleteBinding}
+import SetLangDSL.DSL.Value
+
 import scala.collection.mutable
 
-import SetLangDSL.DSL.*
-
-class ScopeBindings(context: ScopeDefinition)
-  extends Bindings[ScopeBindings](context)
-{
+class ScopeBindings(scope: ScopeDefinition) {
 
   val bindingMap: mutable.Map[String, Value] = mutable.Map.empty[String, Value]
 
@@ -18,13 +14,6 @@ class ScopeBindings(context: ScopeDefinition)
       new ScopeIncompleteBinding(name, bindingMap, bindingMap(name))
     else
     //println("Creating incomplete binding for: " + name)
-      new ScopeIncompleteBinding(name, bindingMap)
-  }
-
-  def Scope(name: String): ScopeIncompleteBinding = {
-    if(bindingMap.contains(name)) then
-      new ScopeIncompleteBinding(name, bindingMap, bindingMap(name))
-    else
       new ScopeIncompleteBinding(name, bindingMap)
   }
 

@@ -1,18 +1,28 @@
 package SetLangDSL.DSLScope
 
-import SetLangDSL.DSLClass._
-import SetLangDSL.DSLMethod._
-import SetLangDSL.DSLScope._
-import SetLangDSL.Skeleton.{Bindings, Definition, IncompleteBinding}
-import SetLangDSL.DSL._
+import SetLangDSL.DSL.Value
+import SetLangDSL.DSLClass.{ClassDefinition, ClassInstance}
+import SetLangDSL.DSLMethod.{MethodContext, MethodDefinition}
 import SetLangDSL.DSLSetOperations.*
-
+import SetLangDSL.DSL.*
 import scala.collection.mutable
 
 class ScopeIncompleteBinding(name: String,
                              bindingMap: mutable.Map[String, Value],
-                             value: Value = null)
-  extends IncompleteBinding[ScopeIncompleteBinding](name, bindingMap, value){
+                             value: Value = null) {
+
+  def getValue:Value = value
+
+  def toValue(value: Any): Unit = {
+    if value.isInstanceOf[Value] then
+      toValue(value.asInstanceOf[Value].getValue)
+    else
+      bindingMap += (name -> Value(value))
+  }
+
+  def toMacro(f: Value=>Unit) = {
+    bindingMap +=(name -> Value(f))
+  }
 
   def NewObject(className: String): ClassInstance = {
     //check if the class definition exists
@@ -39,17 +49,6 @@ class ScopeIncompleteBinding(name: String,
         null
     else
       null
-  }
-
-  def toValue(value: Any): Unit = {
-    if value.isInstanceOf[Value] then
-      toValue(value.asInstanceOf[Value].getValue)
-    else
-      bindingMap += (name -> Value(value))
-  }
-  
-  def toMacro(f: Value=>Unit) = {
-    bindingMap +=(name -> Value(f))
   }
 
   def Insert(value: Any): Value = {
@@ -122,8 +121,4 @@ class ScopeIncompleteBinding(name: String,
       asInstanceOfValue
   }
 
-
 }
-
-
-

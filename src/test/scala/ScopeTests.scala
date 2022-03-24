@@ -157,8 +157,8 @@ class ScopeTests extends AnyFlatSpec with Matchers{
         s.Assign.Variable("x").toValue(2)
       })
 
-        // Test
-        g.Variable("x").getValue shouldBe 1
+      // Test
+      g.Variable("x").getValue shouldBe 1
 
     }// End of global scope
   }

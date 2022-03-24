@@ -1,26 +1,30 @@
 package SetLangDSL
 
-import SetLangDSL.DSLClass.{ClassDefinition, ClassInstance}
-import SetLangDSL.DSLMethod.{MethodContext, MethodDefinition}
+// Scala imports
 import SetLangDSL.DSLScope.ScopeDefinition
 
 import scala.collection.mutable
+import DSLClass.*
+import DSLMethod.*
+import DSLScope.*
 
 object DSL {
-  //Creating a global scope
-  //This acts as an entry point for the DSL
+
+  // Entry point for the DSL
   def Scope(f: ScopeDefinition => Unit): ScopeDefinition = {
     val scopeDefinition = new ScopeDefinition(null)
     f(scopeDefinition)
     scopeDefinition
   }
-  
-  sealed trait accessSpecifier
-  final case object Public extends accessSpecifier
-  final case object Protected extends accessSpecifier
-  final case object Private extends accessSpecifier
 
+  // Parameters for Class Methods/ Constructors
   case class Parameters(parameters: String*)
+
+  // Access specifiers for Class Members
+  sealed trait accessSpecifier
+  case object Public extends accessSpecifier
+  case object Private extends accessSpecifier
+  case object Protected extends accessSpecifier
 
   class Value(value: Any)
   {
@@ -40,9 +44,9 @@ object DSL {
       //value must be an instance of an set for this to work
       if this.checkIfTypeSet then
         //println("Yay insert is working")
-        val set = value.asInstanceOf[mutable.Set[Any]]
+        val set = this.getValue.asInstanceOf[mutable.Set[Any]]
         value match {
-          case value1: Value => set.add(value1.getValue)
+          case asTypeValue: Value => set.add(asTypeValue.getValue)
           case _ => set.add(value)
         }
         this
@@ -135,4 +139,6 @@ object DSL {
         false
     }
   }
+
 }
+

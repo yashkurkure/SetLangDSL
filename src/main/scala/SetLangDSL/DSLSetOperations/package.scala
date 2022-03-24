@@ -1,13 +1,9 @@
 package SetLangDSL
 
-// Scala Imports
 import scala.collection.mutable
+import SetLangDSL.DSL.Value
 
-import SetLangDSL.DSL.*
-
-package object DSLSetOperations
-{
-
+package object DSLSetOperations {
   /**
    * SetInsert(value: Any)
    *
@@ -20,13 +16,13 @@ package object DSLSetOperations
     val set = mutable.Set.empty[Any]
 
     // Check if the passed value is a raw value of encased in Value
-    if(value.isInstanceOf[Value])
+    if (value.isInstanceOf[Value])
 
-      // Convert the value to raw
-      // Insert the value in the set
+    // Convert the value to raw
+    // Insert the value in the set
       set.add(value.asInstanceOf[Value].getValue)
     else
-      // Insert the raw value in the set
+    // Insert the raw value in the set
       set.add(value)
 
     // return the set value
@@ -46,10 +42,10 @@ package object DSLSetOperations
     val set = mutable.Set.empty[Any]
 
     // For each value in the tuple
-    values.productIterator.foreach(x=>{
+    values.productIterator.foreach(x => {
 
       // If the value is encased in Value
-      if(x.isInstanceOf[Value])
+      if (x.isInstanceOf[Value])
         set.add(x.asInstanceOf[Value].getValue)
 
       // If the value is raw
@@ -157,18 +153,17 @@ package object DSLSetOperations
       // Check if any of the user's sets are empty
       if set1.isEmpty || set2.isEmpty then
 
-        // Return empty set if any of the user's sets are empty
+      // Return empty set if any of the user's sets are empty
         resultSet
 
       else
 
         // Calculate the cartesian product
-        set1.foreach(mem1=>set2.foreach(mem2=>resultSet.add((mem1, mem2))))
+        set1.foreach(mem1 => set2.foreach(mem2 => resultSet.add((mem1, mem2))))
         resultSet
 
     else
-      // Return null if the values are not sets
+    // Return null if the values are not sets
       null
   }
-
 }

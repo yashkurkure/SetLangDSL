@@ -1,12 +1,12 @@
 package SetLangDSL.DSLMethod
 
-import SetLangDSL.DSLMethod.*
-import SetLangDSL.DSLClass.*
-import SetLangDSL.DSL.*
-import SetLangDSL.DSLScope.{ScopeBindings, ScopeDefinition, ScopeIncompleteBinding}
+import SetLangDSL.DSL.Value
+import SetLangDSL.DSLClass.ClassInstance
+import SetLangDSL.DSLScope.ScopeIncompleteBinding
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
+
 class MethodContext(
                      scopeIncompleteBinding: ScopeIncompleteBinding, classInstance: ClassInstance, methodDefinition: MethodDefinition) {
 
@@ -31,7 +31,7 @@ class MethodContext(
     else
       null
   }
-  
+
   def Execute: Unit = {
     val methodBindings = methodDefinition.bindings
     val bindingMap = methodBindings.bindingMap

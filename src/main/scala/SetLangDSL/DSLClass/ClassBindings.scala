@@ -1,22 +1,16 @@
 package SetLangDSL.DSLClass
 
-// Scala imports
-
+import SetLangDSL.DSLScope.{ScopeBindings, ScopeDefinition}
 import scala.collection.mutable
+import SetLangDSL.DSL.*
 
-// DSL imports
-import SetLangDSL.DSL.accessSpecifier
-import SetLangDSL.DSL._
-import SetLangDSL.Skeleton._
 
-class ClassBindings(classContext: ClassDefinition) extends Bindings[ClassBindings](classContext)
+class ClassBindings(scopeDefinition: ScopeDefinition) extends ScopeBindings(scopeDefinition)
 {
 
-  val bindingMap: mutable.Map[String, Value] = mutable.Map.empty[String, Value]
   private val accessBindingMap = mutable.Map.empty[String, accessSpecifier]
 
-  def Variable(name: String): ClassIncompleteBinding = {
-    
+  override def Variable(name: String): ClassIncompleteBinding = {
     //check if the binding already exists, and is not null
     if(bindingMap.contains(name) && bindingMap(name) != null) then
     //println("Binding found for name: " + name)
@@ -37,9 +31,6 @@ class ClassBindings(classContext: ClassDefinition) extends Bindings[ClassBinding
       println("Creating incomplete binding for: " + name)
       new ClassIncompleteBinding(access, name, bindingMap, accessBindingMap)
   }
-  
 
-  def Scope(name: String): ClassIncompleteBinding = {
-    null
-  }
+
 }
