@@ -94,8 +94,24 @@ object DSL {
       else
         null
     }
-
-
+    
+    def getField(name: String): Value = {
+      // Check if this is a class instance
+      if this.checkIfTypeClassInstance then
+        val instance = this.getValue.asInstanceOf[ClassInstance]
+        instance.getField(name)
+      else
+        null
+    }
+    
+    def getMethod(name: String): MethodContext = {
+      if this.checkIfTypeClassInstance then
+        val instance = this.getValue.asInstanceOf[ClassInstance]
+        instance.getMethod(name)
+      else
+        null
+    }
+    
     def checkIfTypeScope: Boolean = {
       //println("checkType")
       if this.getValue.isInstanceOf[ScopeDefinition] then true

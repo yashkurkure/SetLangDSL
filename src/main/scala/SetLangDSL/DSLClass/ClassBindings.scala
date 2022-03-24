@@ -8,7 +8,7 @@ import SetLangDSL.DSL.*
 class ClassBindings(scopeDefinition: ScopeDefinition) extends ScopeBindings(scopeDefinition)
 {
 
-  private val accessBindingMap = mutable.Map.empty[String, accessSpecifier]
+  val accessBindingMap = mutable.Map.empty[String, accessSpecifier]
 
   override def Variable(name: String): ClassIncompleteBinding = {
     //check if the binding already exists, and is not null

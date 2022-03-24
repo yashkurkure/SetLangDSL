@@ -95,14 +95,19 @@ class ScopeIncompleteBinding(name: String,
    *
    *  Used for creating an instance of a defined class
    * */
-  def NewObject(className: String): ClassInstance = {
-    //check if the class definition exists
-    if this.value != null && bindingMap(className).checkIfTypeClassDefinition then
-      //create an instance
-      val instance = new ClassInstance(bindingMap(className).getValue.asInstanceOf[ClassDefinition])
-      //create a binding for the instance
-      bindingMap += (name->Value(instance))
-      instance
+  def toNewObjectOf(className: String): ClassInstance = {
+    if this.value == null then
+      //check if the class definition exists
+      if bindingMap.contains(className) && bindingMap(className).checkIfTypeClassDefinition then
+        //create an instance
+        val instance = new ClassInstance(bindingMap(className).getValue.asInstanceOf[ClassDefinition])
+        //create a binding for the instance
+        println("Created a new object and added to bindings")
+        bindingMap += (name->Value(instance))
+        instance
+      else
+        println("DID NOT Created a new object and added to bindings")
+        null
     else
       null
   }

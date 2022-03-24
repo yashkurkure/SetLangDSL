@@ -42,7 +42,7 @@ class ClassTests extends AnyFlatSpec with Matchers {
       })
 
       //Creating a class object
-      g.Assign.Variable("myObject").NewObject("numbers")
+      g.Assign.Variable("myObject").toNewObjectOf("numbers")
 
       //Executing a method of a class object
       // result1 should be assigned to Value(4)
@@ -52,4 +52,56 @@ class ClassTests extends AnyFlatSpec with Matchers {
     compareValues(globalScope.Variable("result1").getValue, 4) shouldBe true
 
   }
+
+  //test 2
+  it should "Create a private class member" in {
+    
+    val globalScope = Scope{g=>
+
+      // Create a class
+      g.ClassDef("A", {c=>
+
+        // Create a private member
+        c.Assign.Variable(Private, "x").toValue(1)
+
+      })
+
+      // Create an object of the class
+      g.Assign.Variable("A_obj").toNewObjectOf("A")
+
+      //On trying to access a private field you would get null
+      try{
+        g.Variable("A_obj").getField("x")
+      }
+      g.Variable("A_obj").getField("x")
+
+      an [Exception] should be thrownBy g.Variable("A_obj").getField("x")
+
+    }
+
+  }
+
+  //test 3
+  it should "Create a protected class member" in {
+
+  }
+
+  //test 4
+  it should "Create a class with a parameterized constructor" in {
+
+  }
+
+  //test 5
+  it should "Create a private method" in {
+
+  }
+
+  //test 6
+  it should "Create a protected method" in {
+
+  }
+
+  //test 7
+  it should "Create a "
+
 }
