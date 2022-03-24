@@ -5,6 +5,9 @@
 *.iws
 *.tasty
 .idea
+.idea/
+.bsp
+.bsp/
 /src/intellij*/*.iml
 /src/intellij*/*.ipr
 /src/intellij*/*.iws
