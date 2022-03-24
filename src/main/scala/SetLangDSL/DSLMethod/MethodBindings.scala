@@ -2,7 +2,6 @@ package SetLangDSL.DSLMethod
 import SetLangDSL.DSLClass.ClassIncompleteBinding
 import SetLangDSL.DSLScope.ScopeIncompleteBinding
 import SetLangDSL.Skeleton.Bindings
-import SetLangDSL.Value
 import SetLangDSL.DSL._
 
 import scala.collection.mutable

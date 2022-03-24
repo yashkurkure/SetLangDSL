@@ -4,15 +4,13 @@ package SetLangDSL.DSLMethod
 import SetLangDSL.DSLClass.{ClassBindings, ClassDefinition, ClassIncompleteBinding}
 import SetLangDSL.DSLScope.ScopeDefinition
 import SetLangDSL.Skeleton.{Bindings, Definition}
-
 import scala.annotation.targetName
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 //DSL imports
-import SetLangDSL.DSL.accessSpecifier
-import SetLangDSL.Value
-import SetLangDSL.Parameters
+import SetLangDSL.DSL.*
+
 
 /**
  * SetLangMethod

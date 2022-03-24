@@ -1,10 +1,7 @@
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-
 import scala.collection.mutable
 import SetLangDSL.DSL.*
-import SetLangDSL._
-import SetLangDSL.Parameters
 
 class TestDSLClass extends AnyFlatSpec with Matchers {
   behavior of "Set operations in setLang"

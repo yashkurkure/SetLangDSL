@@ -1,6 +1,7 @@
 package SetLangDSL.Skeleton
+import SetLangDSL.DSL.*
 
-import SetLangDSL.Value
+
 import scala.collection.mutable
 trait IncompleteBinding[T <: IncompleteBinding[T]](name: String, 
                                                    bindingMap: mutable.Map[String, Value], 
