@@ -1,14 +1,13 @@
 package SetLangDSL.DSLScope
 
-import SetLangDSL.DSLClass.{ClassDefinition, ClassInstance}
-import SetLangDSL.Skeleton.{Bindings, Definition, IncompleteBinding}
-import SetLangDSL.Value
+import SetLangDSL.DSL.*
+import SetLangDSL.DSLClass.ClassDefinition
 
 import scala.annotation.targetName
 
-class ScopeDefinition(parent: ScopeDefinition)
-  extends Definition[ScopeDefinition](parent)
-{
+class ScopeDefinition(parent: ScopeDefinition) {
+
+  // Book keeping for the scope's bindings
   val bindings: ScopeBindings = new ScopeBindings(this)
 
   def Assign: ScopeBindings = {
@@ -33,7 +32,7 @@ class ScopeDefinition(parent: ScopeDefinition)
     // returning null is the same as the binding not being found
       null
   }
-  
+
   def ExecuteMacro(macroName: String, variable: Value): Unit = {
     val macroBody = this.Variable(macroName).getValue.asInstanceOf[Value=>Unit]
     macroBody(variable)
@@ -41,7 +40,7 @@ class ScopeDefinition(parent: ScopeDefinition)
 
   @targetName("Create Anonymous Scope")
   def Scope(f:ScopeDefinition=>Unit): Unit = {
-    println("Creating Anonymous Scope")
+    //println("Creating Anonymous Scope")
     //create a execution context
     val scope = new ScopeDefinition(this)
     //execute the user's operations of the context
@@ -50,7 +49,7 @@ class ScopeDefinition(parent: ScopeDefinition)
 
   @targetName("Create Named Scope")
   def Scope(scopeName: String, f:ScopeDefinition => Unit): Unit = {
-    println("Creating Named Scope")
+    //println("Creating Named Scope")
     //create a execution context
     val scope = new ScopeDefinition(this)
 
@@ -69,7 +68,7 @@ class ScopeDefinition(parent: ScopeDefinition)
     //if the value of the binding is not null, then the binding was found
     if incompleteBinding.getValue != null then
       //return the value as an execution context
-      println("Found")
+      //println("Found")
       val valueAsType = incompleteBinding.getValue
       //Check if the variable is bound to a Scope(ExecutionContext)
       if valueAsType.checkIfTypeScope then
@@ -80,17 +79,22 @@ class ScopeDefinition(parent: ScopeDefinition)
     //Search the parent if the binding is not found
       parent.Scope(scopeName)
     else
-      println("Not Found")
-      //if the parent is null, we have reached the global scope and the binding was not found
-      //return null as the binding was not found
+    //println("Not Found")
+    //if the parent is null, we have reached the global scope and the binding was not found
+    //return null as the binding was not found
       null
   }
 
-  def ClassDef(className: String, f: ClassDefinition => Unit): Unit=
-  {
+  /**
+   * ClassDef()
+   *
+   * Serves as an entry point to create a Class
+   *
+   * */
+  def ClassDef(className: String, f: ClassDefinition => Unit): Unit = {
     val classDefinition = new ClassDefinition(className, null)
     f(classDefinition)
     this.Assign.Variable(className).toValue(classDefinition)
   }
-  
+
 }

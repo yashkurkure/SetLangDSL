@@ -1,12 +1,14 @@
 package SetLangDSL.DSLClass
-import scala.collection.mutable
-import SetLangDSL.Value
 
+import SetLangDSL.DSL.Value
+
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
-class ClassInstance(classDefinition: ClassDefinition) {
-  
+
+class ClassInstance (classDefinition: ClassDefinition){
+
   def getDefinition: ClassDefinition = classDefinition
-  
+
   val classBindings = mutable.Map.empty[String, Value]
 
   def withParameters(value: Any): Unit = {
@@ -23,5 +25,4 @@ class ClassInstance(classDefinition: ClassDefinition) {
         classBindings += (parameters(i)->Value(valuesAsArray(i)))
       }
   }
-
 }

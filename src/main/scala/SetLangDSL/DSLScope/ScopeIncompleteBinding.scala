@@ -1,18 +1,28 @@
 package SetLangDSL.DSLScope
 
-import SetLangDSL.DSLClass._
-import SetLangDSL.DSLMethod._
-import SetLangDSL.DSLScope._
-import SetLangDSL.Skeleton.{Bindings, Definition, IncompleteBinding}
-import SetLangDSL.Value
-import SetLangDSL.DSL._
-
+import SetLangDSL.DSL.Value
+import SetLangDSL.DSLClass.{ClassDefinition, ClassInstance}
+import SetLangDSL.DSLMethod.{MethodContext, MethodDefinition}
+import SetLangDSL.DSLSetOperations.*
+import SetLangDSL.DSL.*
 import scala.collection.mutable
 
 class ScopeIncompleteBinding(name: String,
                              bindingMap: mutable.Map[String, Value],
-                             value: Value = null)
-  extends IncompleteBinding[ScopeIncompleteBinding](name, bindingMap, value){
+                             value: Value = null) {
+
+  def getValue:Value = value
+
+  def toValue(value: Any): Unit = {
+    if value.isInstanceOf[Value] then
+      toValue(value.asInstanceOf[Value].getValue)
+    else
+      bindingMap += (name -> Value(value))
+  }
+
+  def toMacro(f: Value=>Unit) = {
+    bindingMap +=(name -> Value(f))
+  }
 
   def NewObject(className: String): ClassInstance = {
     //check if the class definition exists
@@ -41,95 +51,74 @@ class ScopeIncompleteBinding(name: String,
       null
   }
 
-  def toValue(value: Any): Unit = {
-    if value.isInstanceOf[Value] then
-      toValue(value.asInstanceOf[Value].getValue)
-    else
-      bindingMap += (name -> Value(value))
-  }
-  
-  def toMacro(f: Value=>Unit) = {
-    bindingMap +=(name -> Value(f))
-  }
-
   def Insert(value: Any): Value = {
-    val set = mutable.Set.empty[Any]
-    if(value.isInstanceOf[Value])
-      set.add(value.asInstanceOf[Value].getValue)
+    val set = SetInsert(value)
+    if set == null then
+      null
     else
-      set.add(value)
-    val asInstanceOfType = Value(set)
-    bindingMap += (name -> Value(set))
-    asInstanceOfType
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
   def Insert(values: Tuple): Value = {
-    val set = mutable.Set.empty[Any]
-    values.productIterator.foreach(x=>{
-      if(x.isInstanceOf[Value])
-        set.add(x.asInstanceOf[Value].getValue)
-      else
-        set.add(x)
-    })
-    val asInstanceOfType = Value(set)
-    bindingMap += (name -> Value(set))
-    asInstanceOfType
+    val set = SetInsert(values)
+    if set == null then
+      null
+    else
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
   def Union(set1AsValue: Value, set2AsValue: Value): Value = {
-    if set1AsValue.checkIfTypeSet && set2AsValue.checkIfTypeSet then
-      val resultSet = set1AsValue.getValue.asInstanceOf[mutable.Set[Any]] | set2AsValue.getValue.asInstanceOf[mutable.Set[Any]]
-      bindingMap += (name->Value(resultSet))
-      Value(resultSet)
-    else
+    val set = SetUnion(set1AsValue, set2AsValue)
+    if set == null then
       null
+    else
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
   def Intersection(set1AsValue: Value, set2AsValue: Value): Value = {
-    if set1AsValue.checkIfTypeSet && set2AsValue.checkIfTypeSet then
-      val resultSet = set1AsValue.getValue.asInstanceOf[mutable.Set[Any]] & set2AsValue.getValue.asInstanceOf[mutable.Set[Any]]
-      bindingMap += (name->Value(resultSet))
-      Value(resultSet)
-    else
+    val set = SetIntersection(set1AsValue, set2AsValue)
+    if set == null then
       null
+    else
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
   def Difference(set1AsValue: Value, set2AsValue: Value): Value = {
-    if set1AsValue.checkIfTypeSet && set2AsValue.checkIfTypeSet then
-      val resultSet = set1AsValue.getValue.asInstanceOf[mutable.Set[Any]] &~ set2AsValue.getValue.asInstanceOf[mutable.Set[Any]]
-      bindingMap += (name->Value(resultSet))
-      Value(resultSet)
-    else
+    val set = SetDifference(set1AsValue, set2AsValue)
+    if set == null then
       null
+    else
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
   def SymmetricDifference(set1AsValue: Value, set2AsValue: Value): Value = {
-    if set1AsValue.checkIfTypeSet && set2AsValue.checkIfTypeSet then
-      val resultSet = (set1AsValue.getValue.asInstanceOf[mutable.Set[Any]] | set2AsValue.getValue.asInstanceOf[mutable.Set[Any]]) &~ (set1AsValue.getValue.asInstanceOf[mutable.Set[Any]] & set2AsValue.getValue.asInstanceOf[mutable.Set[Any]])
-      bindingMap += (name->Value(resultSet))
-      Value(resultSet)
-    else
+    val set = SetSymmetricDifference(set1AsValue, set2AsValue)
+    if set == null then
       null
+    else
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
   def CartesianProduct(set1AsValue: Value, set2AsValue: Value): Value = {
-    if set1AsValue.checkIfTypeSet && set2AsValue.checkIfTypeSet then
-      val set1 = set1AsValue.getValue.asInstanceOf[mutable.Set[Any]]
-      val set2 = set2AsValue.getValue.asInstanceOf[mutable.Set[Any]]
-      val resultSet = mutable.Set.empty[Any]
-      if set1.isEmpty || set2.isEmpty then
-        Value(resultSet)
-      else
-        set1.foreach(mem1=>set2.foreach(mem2=>resultSet.add((mem1, mem2))))
-        Value(resultSet)
-      bindingMap += (name->Value(resultSet))
-      Value(resultSet)
-    else
+    val set = SetCartesianProduct(set1AsValue, set2AsValue)
+    if set == null then
       null
+    else
+      val asInstanceOfValue = Value(set)
+      bindingMap += (name -> asInstanceOfValue)
+      asInstanceOfValue
   }
 
-
 }
-
-
-
