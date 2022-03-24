@@ -19,8 +19,8 @@ out
 .history/
 .lib/
 dist/*
-target/
-target/*
+/target
+/target/*
 bin/
 libexec/
 lib_managed/
