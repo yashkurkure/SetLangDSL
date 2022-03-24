@@ -133,8 +133,11 @@ class ClassInstance (classDefinition: ClassDefinition){
 
   /**
    * withParameters
+   *  parameters:
+   *    value: A single value for the first parameter
    *
-   * TODO: Inspect working
+   * Used to pass parameters to th constructor when the object is being instantiated.
+   * If number of parameters is not 1, then a runtime exception will be thrown
    * */
   def withParameters(value: Any): Unit = {
     if constructorParameters.size == 1 then
@@ -146,8 +149,13 @@ class ClassInstance (classDefinition: ClassDefinition){
 
   /**
    * withParameters
+   *  parameters:
+   *    values: A tuple of values (upto 22) denoting the value for parameters
+   *              1 to 22 for the class constructor
    *
-   * TODO: Inspect working
+   * Used to pass parameters to th constructor when the object is being instantiated
+   *
+   * If number of values do not match the number of parameters, then a runtime exception will be thrown
    * */
   def withParameters(values: Tuple): Unit = {
     val valuesAsArray = new ArrayBuffer[Any]
