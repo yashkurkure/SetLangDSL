@@ -19,9 +19,9 @@ class MacroTests extends AnyFlatSpec with Matchers{
 
     val globalScope = Scope{g=>
 
-      g.Assign.Variable("mySet").Insert(1,2,3,4,5)
+      g.AssignVariable("mySet").Insert(1,2,3,4,5)
 
-      g.Assign.Variable("DeleteMacro").toMacro{m=>
+      g.AssignVariable("DeleteMacro").toMacro{m=>
         m.Delete(1)
         m.Insert(100,200)
       }

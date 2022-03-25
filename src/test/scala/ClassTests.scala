@@ -63,12 +63,12 @@ class ClassTests extends AnyFlatSpec with Matchers {
       g.ClassDef("A", {c=>
 
         // Create a private member
-        c.Assign.Variable(Private, "x").toValue(1)
+        c.AssignVariable(Private, "x").toValue(1)
 
       })
 
       // Create an object of the class
-      g.Assign.Variable("A_obj").toNewObjectOf("A")
+      g.AssignVariable("A_obj").toNewObjectOf("A")
 
       // Accessing a private/protected or not bound name will return null
       g.Variable("A_obj").getField("x") shouldBe null
@@ -91,7 +91,7 @@ class ClassTests extends AnyFlatSpec with Matchers {
         c.Constructor(Parameters("param1"), c=>{})
       })
 
-      g.Assign.Variable("A_obj").toNewObjectOf("A").withParameters(1)
+      g.AssignVariable("A_obj").toNewObjectOf("A").withParameters(1)
 
       g.Variable("A_obj").getField("param1").getValue shouldBe 1
 
@@ -109,7 +109,7 @@ class ClassTests extends AnyFlatSpec with Matchers {
         c.Constructor(Parameters("param1", "param2", "param3"), c=>{})
       })
 
-      g.Assign.Variable("A_obj").toNewObjectOf("A").withParameters(1,2,3)
+      g.AssignVariable("A_obj").toNewObjectOf("A").withParameters(1,2,3)
 
       g.Variable("A_obj").getField("param1").getValue shouldBe 1
       g.Variable("A_obj").getField("param2").getValue shouldBe 2
@@ -127,7 +127,7 @@ class ClassTests extends AnyFlatSpec with Matchers {
       g.ClassDef("A", {c=>
 
         // Create a private member
-        c.Assign.Variable(Private, "x").toValue(1)
+        c.AssignVariable(Private, "x").toValue(1)
 
         c.Method(Public, "getX", Parameters(), {m=>
 
@@ -137,7 +137,7 @@ class ClassTests extends AnyFlatSpec with Matchers {
 
       })
 
-      g.Assign.Variable("A_obj").toNewObjectOf("A")
+      g.AssignVariable("A_obj").toNewObjectOf("A")
       g.Variable("A_obj").getMethod("getX")
 
     }

@@ -67,12 +67,12 @@ class ClassInstance (classDefinition: ClassDefinition){
    *  access fields and methods.
    * */
   // Load the bindings
-  classDefinition.bindings.bindingMap.foreach((s,v)=>{
+  classDefinition.bindingMap.foreach((s,v)=>{
       instanceBindings += (s->v)
     })
 
   // Load the map of access specifiers
-  classDefinition.bindings.accessBindingMap.foreach((s,a)=>{
+  classDefinition.accessBindingMap.foreach((s,a)=>{
     instanceAccessBindings += (s->a)
   })
 

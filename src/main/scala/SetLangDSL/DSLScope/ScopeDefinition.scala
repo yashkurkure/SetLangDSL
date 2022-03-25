@@ -11,7 +11,7 @@ package SetLangDSL.DSLScope
 
 // Scala Imports
 import scala.annotation.targetName
-
+import scala.collection.mutable
 // DSL Imports
 import SetLangDSL.DSL.*
 import SetLangDSL.DSLClass.ClassDefinition
@@ -32,7 +32,10 @@ class ScopeDefinition(parent: ScopeDefinition) {
 
 
   // Book keeping for the scope's bindings
-  val bindings: ScopeBindings = new ScopeBindings(this)
+  //val bindings: ScopeBindings = new ScopeBindings(this)
+
+  // Experimental
+  val bindingMap: mutable.Map[String, Value] = mutable.Map.empty[String, Value]
 
 
   /**
@@ -41,8 +44,16 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * Returns the bindings, on which you can
    *  call operations to create new bindings
    * */
-  def Assign: ScopeBindings = {
-    bindings
+//  def Assign: ScopeBindings = {
+//    bindings
+//  }
+
+  //Experimental
+  def AssignVariable(name: String):ScopeIncompleteBinding = {
+    if bindingMap.contains(name) then
+      new ScopeIncompleteBinding(name, bindingMap, bindingMap(name))
+    else
+      new ScopeIncompleteBinding(name, bindingMap)
   }
 
 
@@ -57,7 +68,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def Variable(name: String): Value= {
     // Get the incomplete binding (This can tell us if the binding exists or not)
-    val incompleteBinding = bindings.Variable(name)
+    val incompleteBinding = AssignVariable(name)
 
     // If the value of the incomplete binding is not null, that means a binding exits
     if incompleteBinding.getValue != null then
@@ -130,7 +141,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
     f(scope)
 
     //create a binding for the context, so that it's bindings can be accessed later
-    this.Assign.Variable(scopeName).toValue(scope)
+    this.AssignVariable(scopeName).toValue(scope)
   }
 
 
@@ -146,7 +157,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
   @targetName("Get Named Scope")
   def Scope(scopeName: String): ScopeDefinition = {
     //search if the binding exists
-    val incompleteBinding = bindings.Variable(scopeName)
+    val incompleteBinding = AssignVariable(scopeName)
 
     //if the value of the binding is not null, then the binding was found
     if incompleteBinding.getValue != null then
@@ -178,7 +189,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
   def ClassDef(className: String, f: ClassDefinition => Unit): Unit = {
     val classDefinition = new ClassDefinition(className, null)
     f(classDefinition)
-    this.Assign.Variable(className).toValue(classDefinition)
+    this.AssignVariable(className).toValue(classDefinition)
   }
 
   // Todo: Create a deep copy of this class

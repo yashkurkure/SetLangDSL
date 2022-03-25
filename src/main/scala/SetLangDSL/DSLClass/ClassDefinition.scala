@@ -2,21 +2,51 @@ package SetLangDSL.DSLClass
 
 import SetLangDSL.DSL.*
 import SetLangDSL.DSLMethod.MethodDefinition
-import SetLangDSL.DSLScope.{ScopeBindings, ScopeDefinition}
+import SetLangDSL.DSLScope.{ScopeDefinition, ScopeIncompleteBinding}
 
 import scala.collection.mutable
 
 class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefinition(parent)
 {
-  override val bindings: ClassBindings = new ClassBindings(this)
+
+
+
+  //override val bindings: ClassBindings = new ClassBindings(this)
   val parameters = new mutable.ArrayBuffer[String]
+
+  // Experimental
+  val accessBindingMap = mutable.Map.empty[String, accessSpecifier]
+  override def AssignVariable(name: String): ClassIncompleteBinding = {
+
+    //check if the binding already exists, and is not null
+    if(bindingMap.contains(name) && bindingMap(name) != null) then
+    //println("Binding found for name: " + name)
+      new ClassIncompleteBinding(Public, name, bindingMap, accessBindingMap, bindingMap(name))
+    else
+    //println("Creating incomplete binding for: " + name)
+      new ClassIncompleteBinding(Public, name, bindingMap, accessBindingMap)
+
+  }
+
+  def AssignVariable(access: accessSpecifier, name: String): ClassIncompleteBinding = {
+    //check if the binding already exists, and is not null
+    //check if the variable is private or not
+    if(bindingMap.contains(name) && accessBindingMap(name) != Private) then
+      println("Binding found for name: " + name)
+      new ClassIncompleteBinding(access, name, bindingMap, accessBindingMap, bindingMap(name))
+    else
+      println("Creating incomplete binding for: " + name)
+      new ClassIncompleteBinding(access, name, bindingMap, accessBindingMap)
+  }
+
+
 
   /**
    * Assign (overridden)
    *
    * returns ClassBindings instead of ScopeBindings
    * */
-  override def Assign: ClassBindings = bindings
+  //override def Assign: ClassBindings = bindings
   
   /**
    * getParameters
@@ -43,7 +73,7 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
              parameters: Parameters,
              f: MethodDefinition=>Value) = {
     val method = new MethodDefinition(this, access, name, parameters, f)
-    this.Assign.Variable(access, name).toValue(method)
+    this.AssignVariable(access, name).toValue(method)
   }
 
 }

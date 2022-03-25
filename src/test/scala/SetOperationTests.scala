@@ -22,7 +22,7 @@ class SetOperationTests extends AnyFlatSpec with Matchers {
     val globalScope = Scope{g=>
 
       //Assign a variable "set1" to a Set("a")
-      g.Assign.Variable("set1").Insert("a")
+      g.AssignVariable("set1").Insert("a")
     }
 
     //To access the Variable "set1" from outside the defined scope
@@ -44,7 +44,7 @@ class SetOperationTests extends AnyFlatSpec with Matchers {
     val globalScope = Scope{g=>
 
       //Assign a variable "set1" to a Set("a", "b", "c")
-      g.Assign.Variable("set1").Insert("a","b","c")
+      g.AssignVariable("set1").Insert("a","b","c")
     }
 
     //To access the Variable "set1" from outside the defined scope
@@ -67,11 +67,11 @@ class SetOperationTests extends AnyFlatSpec with Matchers {
     val globalScope = Scope{g=>
 
       // Assign a variable "set1" to a Set("a", "b", "c")
-      g.Assign.Variable("set1").Insert("a","b","c")
+      g.AssignVariable("set1").Insert("a","b","c")
       // Assign a variable "set2" to Set("b", "c", "d", "e", "f")
-      g.Assign.Variable("set2").Insert("b","c","d","e","f")
+      g.AssignVariable("set2").Insert("b","c","d","e","f")
       // Assign a variable "result" to the Union of "set1" and "set2"
-      g.Assign.Variable("result").Union(g.Variable("set1"), g.Variable("set2"))
+      g.AssignVariable("result").Union(g.Variable("set1"), g.Variable("set2"))
     }
 
     // To access the Variable "result" from outside the defined scope
@@ -94,11 +94,11 @@ class SetOperationTests extends AnyFlatSpec with Matchers {
     val globalScope = Scope{g=>
 
       // Assign a variable "set1" to a Set("a", "b", "c")
-      g.Assign.Variable("set1").Insert("a","b","c")
+      g.AssignVariable("set1").Insert("a","b","c")
       // Assign a variable "set1" to a Set("b", "c", "d")
-      g.Assign.Variable("set2").Insert("b","c","d")
+      g.AssignVariable("set2").Insert("b","c","d")
       // Assign a variable "result" to the Intersection of "set1" and "set2"
-      g.Assign.Variable("result").Intersection(g.Variable("set1"), g.Variable("set2"))
+      g.AssignVariable("result").Intersection(g.Variable("set1"), g.Variable("set2"))
     }
 
     // To access the Variable "result" from outside the defined scope
@@ -119,11 +119,11 @@ class SetOperationTests extends AnyFlatSpec with Matchers {
     val globalScope = Scope{g=>
 
       // Assign "set1" with "(1,2,3,4,5)"
-      g.Assign.Variable("set1").Insert(1,2,3,4,5)
+      g.AssignVariable("set1").Insert(1,2,3,4,5)
       // Assign "set2" with "(4,5)"
-      g.Assign.Variable("set2").Insert(4,5)
+      g.AssignVariable("set2").Insert(4,5)
       // Assign "result" to difference of "set1" and "set2"
-      g.Assign.Variable("result").Difference(g.Variable("set1"), g.Variable("set2"))
+      g.AssignVariable("result").Difference(g.Variable("set1"), g.Variable("set2"))
     }
 
     // To access the Variable "result" from outside the defined scope
@@ -145,11 +145,11 @@ class SetOperationTests extends AnyFlatSpec with Matchers {
     val globalScope = Scope{g=>
 
       // Assign "set1" to (1,2,3,4,5)
-      g.Assign.Variable("set1").Insert(1,2,3,4,5)
+      g.AssignVariable("set1").Insert(1,2,3,4,5)
       // Assign "set2" to (2,4,6)
-      g.Assign.Variable("set2").Insert(2,4,6)
+      g.AssignVariable("set2").Insert(2,4,6)
       // Assign "result" to the symmetric difference of "set1" and "set2"
-      g.Assign.Variable("result").SymmetricDifference(g.Variable("set1"), g.Variable("set2"))
+      g.AssignVariable("result").SymmetricDifference(g.Variable("set1"), g.Variable("set2"))
     }
 
     // To access the Variable "result" from outside the defined scope
@@ -170,11 +170,11 @@ class SetOperationTests extends AnyFlatSpec with Matchers {
     val globalScope = Scope{g=>
 
       // Assign "set1" to (1,2,3)
-      g.Assign.Variable("set1").Insert(1,2,3)
+      g.AssignVariable("set1").Insert(1,2,3)
       // Assign "set2" to (2,4,6)
-      g.Assign.Variable("set2").Insert(2,4,6)
+      g.AssignVariable("set2").Insert(2,4,6)
       // Assign "result" to the Cartesian Product of "set1" and "set2"
-      g.Assign.Variable("result").CartesianProduct(g.Variable("set1"), g.Variable("set2"))
+      g.AssignVariable("result").CartesianProduct(g.Variable("set1"), g.Variable("set2"))
     }
 
     // To access the Variable "result" from outside the defined scope
@@ -195,7 +195,7 @@ class SetOperationTests extends AnyFlatSpec with Matchers {
     val globalScope = Scope{g=>
 
       // Assign "set1" to (1,2,3,4,5,6)
-      g.Assign.Variable("set1").Insert(1,2,3,4,5,6)
+      g.AssignVariable("set1").Insert(1,2,3,4,5,6)
       // Delete 2 from "set1"
       g.Variable("set1").Delete(2)
       // Delete 4 from "set1"
@@ -224,9 +224,9 @@ class SetOperationTests extends AnyFlatSpec with Matchers {
     val globalScope = Scope{g=>
 
       // Assign "x" to 3
-      g.Assign.Variable("x").toValue(3)
+      g.AssignVariable("x").toValue(3)
       // Assign "set1" to a set with (1,2, x) where x will be resolved to its value
-      g.Assign.Variable("set1").Insert(1,2,g.Variable("x"))
+      g.AssignVariable("set1").Insert(1,2,g.Variable("x"))
     }
 
     // To access the Variable "set1" from outside the defined scope
@@ -247,9 +247,9 @@ class SetOperationTests extends AnyFlatSpec with Matchers {
     val globalScope = Scope{g=>
 
       // Assign "x" to 3
-      g.Assign.Variable("x").toValue(3)
+      g.AssignVariable("x").toValue(3)
       // Assign "set1" to (1,2,3,4)
-      g.Assign.Variable("set1").Insert(1,2,3,4)
+      g.AssignVariable("set1").Insert(1,2,3,4)
       // Delete value of "x" from "set1"
       g.Variable("set1").Delete(g.Variable("x"))
     }
@@ -272,9 +272,9 @@ class SetOperationTests extends AnyFlatSpec with Matchers {
     // Create a global scope for the DSL
     val globalScope = Scope{g=>
 
-      g.Assign.Variable("x").toValue(3)
+      g.AssignVariable("x").toValue(3)
       // Assign "set1" to (1,2,3,4)
-      g.Assign.Variable("set1").Insert(1,2,3,4)
+      g.AssignVariable("set1").Insert(1,2,3,4)
 
       // Test Check() operation
       g.Variable("set1").Check(2).getValue shouldBe true

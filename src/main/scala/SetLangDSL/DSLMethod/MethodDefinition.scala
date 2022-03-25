@@ -9,7 +9,7 @@ package SetLangDSL.DSLMethod
  *
  */
 
-import SetLangDSL.DSLScope.{ScopeBindings, ScopeDefinition}
+import SetLangDSL.DSLScope.{ScopeDefinition, ScopeIncompleteBinding}
 import SetLangDSL.DSL.*
 
 class MethodDefinition(parent: ScopeDefinition,
@@ -19,12 +19,24 @@ class MethodDefinition(parent: ScopeDefinition,
                        body: MethodDefinition=>Value //method definition
                       ) extends ScopeDefinition(parent){
 
-  override val bindings: MethodBindings = new MethodBindings(this)
+  //override val bindings: MethodBindings = new MethodBindings(this)
 
   def getParameters: Parameters = parameters
   def getAccessSpecifier: accessSpecifier = access
   def getBody: MethodDefinition=>Value = body
 
-  override def Assign: MethodBindings = bindings
+  //override def Assign: MethodBindings = bindings
+
+  // Experimental
+  override def AssignVariable(name: String): MethodIncompleteBinding = {
+    // The variable should be already be bound or
+    // The variable should not be a parameter to the method
+    if(bindingMap.contains(name) || parameters.parameters.contains(name)) then
+    //println("Binding found for name: " + name)
+      new MethodIncompleteBinding(name, bindingMap, bindingMap(name))
+    else
+    //println("Creating incomplete binding for: " + name)
+      new MethodIncompleteBinding(name, bindingMap)
+  }
 
 }

@@ -22,7 +22,7 @@ class ScopeTests extends AnyFlatSpec with Matchers{
     val globalScope = Scope{g=>
 
       //Assign a variable "x" to a 1
-      g.Assign.Variable("x").toValue(1)
+      g.AssignVariable("x").toValue(1)
     }// End of global scope
 
     //To access the Variable "set1" from outside the defined scope
@@ -45,7 +45,7 @@ class ScopeTests extends AnyFlatSpec with Matchers{
     val globalScope = Scope{g=>
 
       //Assign a variable "x" to a 1 on global level
-      g.Assign.Variable("x").toValue(1)
+      g.AssignVariable("x").toValue(1)
       g.Scope(s=>{
 
         // Test
@@ -69,12 +69,12 @@ class ScopeTests extends AnyFlatSpec with Matchers{
     val globalScope = Scope { g =>
 
       //Assign a variable "x" to a 1 on global level
-      g.Assign.Variable("x").toValue(1)
+      g.AssignVariable("x").toValue(1)
       g.Scope(s => {
 
         // Assign "x" to 2 in this scope
         // This will shadow the outer "x"
-        s.Assign.Variable("x").toValue(2)
+        s.AssignVariable("x").toValue(2)
 
 
         // Test
@@ -100,15 +100,15 @@ class ScopeTests extends AnyFlatSpec with Matchers{
     //Global Level
     Scope{g=>
 
-      g.Assign.Variable("x").toValue(1)
-      g.Assign.Variable("y").toValue(100)
+      g.AssignVariable("x").toValue(1)
+      g.AssignVariable("y").toValue(100)
 
 
       // Level 1
       g.Scope{s1=>
 
         // This will shadow "x" from the global scope
-        s1.Assign.Variable("x").toValue(2)
+        s1.AssignVariable("x").toValue(2)
 
         // Level 2
         s1.Scope{s2=>
@@ -126,7 +126,7 @@ class ScopeTests extends AnyFlatSpec with Matchers{
 
           // Level 3
           s2.Scope{s3=>
-            s3.Assign.Variable("y").toValue(101)
+            s3.AssignVariable("y").toValue(101)
             s3.Variable("y").getValue shouldBe 101
             s3.Variable("x").getValue shouldBe 2
           }
@@ -149,12 +149,12 @@ class ScopeTests extends AnyFlatSpec with Matchers{
     val globalScope = Scope { g =>
 
       //Assign a variable "x" to a 1 on global level
-      g.Assign.Variable("x").toValue(1)
+      g.AssignVariable("x").toValue(1)
       g.Scope(s => {
 
         // Assign "x" to 2 in this scope
         // This will shadow the outer "x"
-        s.Assign.Variable("x").toValue(2)
+        s.AssignVariable("x").toValue(2)
       })
 
       // Test
@@ -175,8 +175,8 @@ class ScopeTests extends AnyFlatSpec with Matchers{
     Scope{g=>
 
       g.Scope("SomeScope", s=>{
-        s.Assign.Variable("x").toValue(1)
-        s.Assign.Variable("y").toValue(2)
+        s.AssignVariable("x").toValue(1)
+        s.AssignVariable("y").toValue(2)
       })
 
       // Test
@@ -197,11 +197,11 @@ class ScopeTests extends AnyFlatSpec with Matchers{
 
     Scope{g=>
 
-      g.Assign.Variable("x").toValue(0)
+      g.AssignVariable("x").toValue(0)
 
       g.Scope("SomeScope", s=>{
-        s.Assign.Variable("x").toValue(1)
-        s.Assign.Variable("y").toValue(2)
+        s.AssignVariable("x").toValue(1)
+        s.AssignVariable("y").toValue(2)
       })
 
       // Test
@@ -221,17 +221,17 @@ class ScopeTests extends AnyFlatSpec with Matchers{
 
     Scope {g=>
 
-      g.Assign.Variable("a").toValue(0)
+      g.AssignVariable("a").toValue(0)
 
       g.Scope("NamedScope1", n1=>{
 
-        n1.Assign.Variable("b").toValue(1)
-        n1.Assign.Variable("c").toValue(2)
+        n1.AssignVariable("b").toValue(1)
+        n1.AssignVariable("c").toValue(2)
 
         n1.Scope("NamedScope2", n2=>{
 
-          n2.Assign.Variable("b").toValue(3) //shadowed
-          n2.Assign.Variable("d").toValue(4)
+          n2.AssignVariable("b").toValue(3) //shadowed
+          n2.AssignVariable("d").toValue(4)
         })
       })
 
