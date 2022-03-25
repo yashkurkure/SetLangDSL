@@ -113,38 +113,38 @@ class ScopeIncompleteBinding(name: String,
   }
 
 
-  /**
-   * Method
-   *  parameters:
-   *    name: name of the method
-   *    classInstance: instance of the class on which the method is called
-   *
-   * Used to execute some method os an instance
-   * The result of the method's execution is stored in the binding: this.name -> result
-   * */
-  def Method(name: String, classInstance: Value): MethodContext = {
-
-    // Check if classInstance is of type ClassInstance
-    if classInstance.checkIfTypeClassInstance then
-      // Get the class definition
-      val classDefinition = classInstance.getValue.asInstanceOf[ClassInstance].getDefinition
-      // Check if the name of the method is bound to a method definition
-      if classDefinition.Variable(name).checkIfTypeMethodDefinition then
-        // Get the method definition
-        val methodDefinition = classDefinition.Variable(name).getValue.asInstanceOf[MethodDefinition]
-        // Check if the method is not private
-        if(methodDefinition.getAccessSpecifier != Private)
-          // return a method context
-          new MethodContext(this, classInstance.getValue.asInstanceOf[ClassInstance], methodDefinition)
-
-        // Return null in all other cases
-        else
-          null
-      else
-        null
-    else
-      null
-  }
+//  /**
+//   * Method
+//   *  parameters:
+//   *    name: name of the method
+//   *    classInstance: instance of the class on which the method is called
+//   *
+//   * Used to execute some method os an instance
+//   * The result of the method's execution is stored in the binding: this.name -> result
+//   * */
+//  def Method(name: String, classInstance: Value): MethodContext = {
+//
+//    // Check if classInstance is of type ClassInstance
+//    if classInstance.checkIfTypeClassInstance then
+//      // Get the class definition
+//      val classDefinition = classInstance.getValue.asInstanceOf[ClassInstance].getDefinition
+//      // Check if the name of the method is bound to a method definition
+//      if classDefinition.Variable(name).checkIfTypeMethodDefinition then
+//        // Get the method definition
+//        val methodDefinition = classDefinition.Variable(name).getValue.asInstanceOf[MethodDefinition]
+//        // Check if the method is not private
+//        if(methodDefinition.getAccessSpecifier != Private)
+//          // return a method context
+//          new MethodContext(this, classInstance.getValue.asInstanceOf[ClassInstance], methodDefinition)
+//
+//        // Return null in all other cases
+//        else
+//          null
+//      else
+//        null
+//    else
+//      null
+//  }
 
 
   /**

@@ -181,4 +181,13 @@ class ScopeDefinition(parent: ScopeDefinition) {
     this.Assign.Variable(className).toValue(classDefinition)
   }
 
+  // Todo: Create a deep copy of this class
+  def deepCopy(): ScopeDefinition = {
+    //Fields that would need copying
+    // bindings
+
+
+    null
+  }
+
 }

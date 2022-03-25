@@ -14,7 +14,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 // DSL Imports
-import SetLangDSL.DSLMethod.MethodContext
+import SetLangDSL.DSLMethod.*
 import SetLangDSL.DSL.*
 import SetLangDSL.*
 
@@ -122,8 +122,11 @@ class ClassInstance (classDefinition: ClassDefinition){
    * */
   def getMethod(name: String): MethodContext = {
     if instanceBindings.contains(name) && instanceAccessBindings(name) == Public then
-      if instanceBindings(name).checkIfTypeMethodContext then
-        instanceBindings(name).asInstanceOf[MethodContext]
+      println("getMethod: Found method definition")
+      if instanceBindings(name).checkIfTypeMethodDefinition then
+        println("getMethod: Of type methodDefinition")
+        val methodDefinition = instanceBindings(name).getValue.asInstanceOf[MethodDefinition]
+        new MethodContext(this, methodDefinition)
       else
         null
     else

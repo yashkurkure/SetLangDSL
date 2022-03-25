@@ -28,6 +28,13 @@ import SetLangDSL.DSL.Value
  * */
 class ScopeBindings(scope: ScopeDefinition) {
 
+  
+  private def this(scopeBindings: ScopeBindings, scope: ScopeDefinition) = {
+    this(scope)
+    scopeBindings.bindingMap.foreach((s,v)=>this.bindingMap.put(s,v))
+  }
+  
+  
   /**
    * bindingMap
    *
@@ -62,6 +69,10 @@ class ScopeBindings(scope: ScopeDefinition) {
       // return an incomplete binding with value set to null as the binding
       //    does not exist (A name->null binding)
       new ScopeIncompleteBinding(name, bindingMap)
+  }
+  
+  def deepCopy(): ScopeBindings = {
+    new ScopeBindings(this, scope)
   }
 
 }
