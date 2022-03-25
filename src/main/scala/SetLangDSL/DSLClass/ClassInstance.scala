@@ -126,7 +126,7 @@ class ClassInstance (classDefinition: ClassDefinition){
       if classDefinition.bindingMap(name).checkIfTypeMethodDefinition then
         println("getMethod: Of type methodDefinition")
         val methodDefinition = classDefinition.bindingMap(name).getValue.asInstanceOf[MethodDefinition]
-        new MethodContext(this, methodDefinition.deepCopy())
+        new MethodContext(methodDefinition.deepCopy())
       else
         null
     else

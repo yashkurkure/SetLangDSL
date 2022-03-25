@@ -1,8 +1,8 @@
 package SetLangDSL.DSLClass
 
 import SetLangDSL.DSL.*
-import SetLangDSL.DSLMethod.MethodDefinition
-import SetLangDSL.DSLScope.{ScopeDefinition, ScopeBinding}
+import SetLangDSL.DSLMethod.{MethodContext, MethodDefinition}
+import SetLangDSL.DSLScope.{ScopeBinding, ScopeDefinition}
 
 import scala.collection.mutable
 
@@ -11,7 +11,7 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
 
   private def this(name: String, parent: ClassDefinition, classDefinition: ClassDefinition)={
     this(name, parent)
-    
+
     // Copy the mutable objects
     classDefinition.bindingMap.foreach((k,v)=>this.bindingMap.put(k,v))
     classDefinition.accessBindingMap.foreach((k,v)=>this.accessBindingMap.put(k,v))
@@ -83,6 +83,20 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
              f: MethodDefinition=>Value) = {
     val method = new MethodDefinition(this, access, name, parameters, f)
     this.AssignVariable(access, name).toValue(method)
+  }
+
+  def getMethod(name: String): MethodContext = {
+    // We don't need to check access specifier as this can only be used inside the class
+    if bindingMap.contains(name) then
+      println("getMethod: Found method definition")
+      if bindingMap(name).checkIfTypeMethodDefinition then
+        println("getMethod: Of type methodDefinition")
+        val methodDefinition = bindingMap(name).getValue.asInstanceOf[MethodDefinition]
+        new MethodContext(methodDefinition.deepCopy())
+      else
+        null
+    else
+      null
   }
 
 

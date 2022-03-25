@@ -10,7 +10,7 @@ import SetLangDSL.DSLClass.ClassInstance
 import SetLangDSL.DSLScope.ScopeBinding
 
 
-class MethodContext(classInstance: ClassInstance, methodDefinition: MethodDefinition) {
+class MethodContext(methodDefinition: MethodDefinition) {
 
   //val parameterBindings = mutable.Map.empty[String, Value]
 
