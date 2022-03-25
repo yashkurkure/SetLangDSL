@@ -19,6 +19,9 @@ object DSL {
 
   // Parameters for Class Methods/ Constructors
   case class Parameters(parameters: String*)
+  
+  // For Class inheritance
+  case class Extends(className: String)
 
   // Access specifiers for Class Members
   sealed trait accessSpecifier

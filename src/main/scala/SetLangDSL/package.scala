@@ -13,5 +13,4 @@ package object SetLangDSL {
     
     string_builder.toString()
   }
-
 }

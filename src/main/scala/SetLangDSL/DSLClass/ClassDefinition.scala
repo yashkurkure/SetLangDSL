@@ -10,7 +10,7 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
 {
 
   private def this(name: String, parent: ClassDefinition, classDefinition: ClassDefinition)={
-    this(name, parent)
+    this(name, if (parent == null) null else parent.deepCopy())
 
     // Copy the mutable objects
     classDefinition.bindingMap.foreach((k,v)=>this.bindingMap.put(k,v))
@@ -64,6 +64,8 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
    * */
   def getConstructorParameters: mutable.ArrayBuffer[String] = parameters
 
+  def getParent: ClassDefinition = parent
+
   /**
    * Constructor
    *
@@ -85,20 +87,142 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
     this.AssignVariable(access, name).toValue(method)
   }
 
-  def getMethod(name: String): MethodContext = {
-    // We don't need to check access specifier as this can only be used inside the class
-    if bindingMap.contains(name) then
-      println("getMethod: Found method definition")
-      if bindingMap(name).checkIfTypeMethodDefinition then
-        println("getMethod: Of type methodDefinition")
-        val methodDefinition = bindingMap(name).getValue.asInstanceOf[MethodDefinition]
-        new MethodContext(methodDefinition.deepCopy())
-      else
-        null
-    else
-      null
+  override def Variable(name: String): Value = {
+    this.getField(name)
   }
 
+
+  /**
+   * getMethod
+   *  parameters:
+   *    name: Name of the method to get
+   *    restrictToPublic: if true, only public bindings will be returned
+   *
+   * Returns a "MethodContext", which can be used to execute the method
+   *
+   * Access Specifier Rules:
+   *
+   * The ClassDefinition instance is never used by the user to call the method, it
+   *  is only used to define the class. But each ClassInstance holds a deep copy of the
+   *   ClassDefinition that the instance will use to handle bindings and call methods.
+   *
+   * Hence, when accessing methods from the ClassDefinition, we have the following cases:
+   *  (provided a binding for the method definition exists)
+   *
+   * Method found in this class
+   * 1) method is Public - allowed to access
+   * 2) method is Private - allowed to access
+   * 3) method is Protected = allowed to access
+   *
+   * Method found in parent class
+   * 1) method is Public - allowed to access
+   * 2) method is Private - NOT allowed to access
+   * 3) method is Protected - allowed to access
+   * */
+  def getMethod(name: String, restrictToPublic: Boolean = false): MethodContext = {
+
+    // Search for the binding in current class
+    if this.bindingMap.contains(name) then
+      if bindingMap(name).checkIfTypeMethodDefinition then
+        val methodDefinition = bindingMap(name).getValue.asInstanceOf[MethodDefinition]
+        if restrictToPublic && methodDefinition.getAccessSpecifier != Public then
+          null
+        else
+          new MethodContext(methodDefinition.deepCopy())
+      else
+        // Case: Binding found, but the name does not refer to a MethodDefinition
+        null
+    else
+      // Case: Binding not found, check parent class
+      if this.parent != null then
+        val methodContext = this.parent.getMethod(name, restrictToPublic)
+        // But if the method is Private we cannot let the user access it
+        if methodContext == null then
+          // Case: Method not found in parent either
+          null
+        else if methodContext.getAccessSpecifier == Private then
+          // Case: Method found in parent, but it is private
+          null
+        else
+          // Case: method found in parent with access level: public or protected
+          if restrictToPublic && methodContext.getAccessSpecifier != Public then
+            null
+          else
+            methodContext
+      else
+        // Case: There is no parent class for this class
+        null
+  }
+
+
+  /**
+   * getField
+   *  parameters:
+   *    name: Name of the field to be searched
+   *    restrictToPublic: if true, only public bindings will be returned
+   *
+   * The ClassDefinition instance is never used by the user to access a field, it
+   *  is only used to define the class. But each ClassInstance holds a deep copy of the
+   *   ClassDefinition that the instance will use to handle bindings to these fields.
+   *
+   * Field found in this class
+   * 1) method is Public - allowed to access
+   * 2) method is Private - allowed to access
+   * 3) method is Protected = allowed to access
+   *
+   * Field found in parent class
+   * 1) method is Public - allowed to access
+   * 2) method is Private - NOT allowed to access
+   * 3) method is Protected - allowed to access
+   *
+   * */
+  def getField(name: String, restrictToPublic: Boolean = false): Value = {
+
+    // Check if this class has the binding
+    if bindingMap.contains(name) then
+      if restrictToPublic && accessBindingMap(name) != Public then
+        null
+      else
+        bindingMap(name)
+    else
+      // Case: This call does not have this binding
+      // Check the parent
+      // getFieldParent will only look for Public and Protected bindings
+      getFieldParent(name, restrictToPublic)
+  }
+
+  /**
+   * getFieldParent
+   *  parameters:
+   *    name: Name of the field to be searched
+   *    restrictToPublic: if true, only public bindings will be returned
+   *
+   * Used to search for a field in the parent class(es)
+   *
+   * This will be used by the getField method to search the parent in case
+   *  the binding is not found in this class.
+   *
+   * Note: If the binding is found in the parent, but it is private, then null will be returned
+   * */
+  private def getFieldParent(name: String, restrictToPublic: Boolean = false): Value = {
+    if parent != null then
+      if parent.bindingMap.contains(name) then
+        if parent.accessBindingMap(name) != Private then
+          if restrictToPublic && parent.accessBindingMap(name) != Public then
+            null
+          else
+            parent.bindingMap(name)
+        else
+          // Case: Binding found, but is private
+          null
+      else
+        // Case: Binding not found in parent
+        // Look for it in the parent of the parent
+        parent.getFieldParent(name, restrictToPublic)
+    else
+      // Case: parent == null, class has not parent
+      null
+  }
 
   override def deepCopy(): ClassDefinition = {
     new ClassDefinition(name, parent, this)

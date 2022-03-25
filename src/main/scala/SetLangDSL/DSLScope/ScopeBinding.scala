@@ -61,6 +61,7 @@ class ScopeBinding(name: String,
    * */
   def toValue(value: Any): Unit = {
 
+    if value == null then return
     // Only create the binding if value is set to null
     if this.value == null then
 
@@ -82,6 +83,8 @@ class ScopeBinding(name: String,
    * */
   def toMacro(f: Value=>Unit): Unit = {
 
+    if f == null then return 
+    
     //Only create the binding if the name is not already bound
     if this.value == null then
       bindingMap +=(name -> Value(f))
@@ -157,6 +160,9 @@ class ScopeBinding(name: String,
    * Used to create a set, with value as a member
    * */
   def Insert(value: Any): Value = {
+    
+    if value == null then return null
+    
     // create a set
     val set = SetInsert(value)
     // if the result is null, there was a problem
@@ -183,6 +189,7 @@ class ScopeBinding(name: String,
    * Used to create a set, with members of the tuple as memebers of the set
    * */
   def Insert(values: Tuple): Value = {
+    
     // create a set
     val set = SetInsert(values)
     // if the set is null there was a problem creating the set
@@ -209,6 +216,7 @@ class ScopeBinding(name: String,
    * Used to create the Union of 2 sets and create a binding for the result set
    * */
   def Union(set1AsValue: Value, set2AsValue: Value): Value = {
+    if set1AsValue == null || set2AsValue == null then return null
     val set = SetUnion(set1AsValue, set2AsValue)
     if set == null then
       null
@@ -232,6 +240,7 @@ class ScopeBinding(name: String,
    * Used to create the intersection of 2 sets and create a binding for the result set
    * */
   def Intersection(set1AsValue: Value, set2AsValue: Value): Value = {
+    if set1AsValue == null || set2AsValue == null then return null
     val set = SetIntersection(set1AsValue, set2AsValue)
     if set == null then
       null
@@ -254,6 +263,7 @@ class ScopeBinding(name: String,
    * Used to create the difference of 2 sets and create a binding for the result set
    * */
   def Difference(set1AsValue: Value, set2AsValue: Value): Value = {
+    if set1AsValue == null || set2AsValue == null then return null
     val set = SetDifference(set1AsValue, set2AsValue)
     if set == null then
       null
@@ -276,6 +286,7 @@ class ScopeBinding(name: String,
    * Used to create the symmetric difference of 2 sets and create a binding for the result set
    * */
   def SymmetricDifference(set1AsValue: Value, set2AsValue: Value): Value = {
+    if set1AsValue == null || set2AsValue == null then return null
     val set = SetSymmetricDifference(set1AsValue, set2AsValue)
     if set == null then
       null
@@ -298,6 +309,7 @@ class ScopeBinding(name: String,
    * Used to create the cartesian product of 2 sets and create a binding for the result set
    * */
   def CartesianProduct(set1AsValue: Value, set2AsValue: Value): Value = {
+    if set1AsValue == null || set2AsValue == null then return null
     val set = SetCartesianProduct(set1AsValue, set2AsValue)
     if set == null then
       null

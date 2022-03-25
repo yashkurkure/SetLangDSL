@@ -44,13 +44,15 @@ package object DSLSetOperations {
     // For each value in the tuple
     values.productIterator.foreach(x => {
 
+      // Do not add null values to the set
+      if x != null then
       // If the value is encased in Value
-      if (x.isInstanceOf[Value])
-        set.add(x.asInstanceOf[Value].getValue)
+        if (x.isInstanceOf[Value])
+          set.add(x.asInstanceOf[Value].getValue)
 
-      // If the value is raw
-      else
-        set.add(x)
+        // If the value is raw
+        else
+          set.add(x)
     })
     set
   }

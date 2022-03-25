@@ -32,61 +32,13 @@ import SetLangDSL.*
  * */
 class ClassInstance (classDefinition: ClassDefinition){
 
-
-  /**
-   * instanceBindings
-   *
-   * Contains the active bindings for the instance.
-   * Maps (String->Value)
-   * */
-  //val instanceBindings = mutable.Map.empty[String, Value]
-
-
-  /**
-   * instanceAccessBindings
-   *
-   * Maps the names to their defined access specifiers.
-   * Maps (String->accessSpecifier)
-   *
-   * Note: accessSpecifier is defined in SetLangDSL.DSL
-   * */
-  //val instanceAccessBindings = mutable.Map.empty[String, accessSpecifier]
-
-
-  /**
-   * constructorParameters
-   *
-   * Contains the names of the constructors parameters
-   * */
-  //val constructorParameters: ArrayBuffer[String] = new ArrayBuffer[String]
-
-
-  /**
-   * We must load the bindings and constructor parameters from the class
-   *  definition into the class instance. before the instance is used to
-   *  access fields and methods.
-   * */
-//  // Load the bindings
-//  classDefinition.bindingMap.foreach((s,v)=>{
-//      instanceBindings += (s->v)
-//    })
-//
-//  // Load the map of access specifiers
-//  classDefinition.accessBindingMap.foreach((s,a)=>{
-//    instanceAccessBindings += (s->a)
-//  })
-//
-//  // Load the constructor parameters
-//  classDefinition.getConstructorParameters.foreach(s=>constructorParameters.addOne(s))
-
-
   /**
    * getDefinition
    *
    * Returns the ClassDefinition instance used by the instance to create the object.
    * TODO: Remove this later, as it is NOT SAFE.
    * */
-  def getDefinition: ClassDefinition = classDefinition
+  private def getDefinition: ClassDefinition = classDefinition
 
 
   /**
@@ -99,15 +51,7 @@ class ClassInstance (classDefinition: ClassDefinition){
    *        The user would not call this manually.
    * */
   def getField(name: String): Value = {
-    if classDefinition.bindingMap.contains(name) then
-      if classDefinition.accessBindingMap(name) == Public then
-        classDefinition.bindingMap(name)
-      else
-        //TODO: Throw exception: Illegal access to private/protected field
-        null
-    else
-      //TODO: Throw exception: Field with name does not exist
-      null
+    classDefinition.getField(name, restrictToPublic = true)
   }
 
 
@@ -121,17 +65,7 @@ class ClassInstance (classDefinition: ClassDefinition){
    *        The user will not call this manually.
    * */
   def getMethod(name: String): MethodContext = {
-    if classDefinition.bindingMap.contains(name) && classDefinition.accessBindingMap(name) == Public then
-      println("getMethod: Found method definition")
-      if classDefinition.bindingMap(name).checkIfTypeMethodDefinition then
-        println("getMethod: Of type methodDefinition")
-        val methodDefinition = classDefinition.bindingMap(name).getValue.asInstanceOf[MethodDefinition]
-        new MethodContext(methodDefinition.deepCopy())
-      else
-        null
-    else
-      null
-
+    classDefinition.getMethod(name, restrictToPublic = true)
   }
 
   /**

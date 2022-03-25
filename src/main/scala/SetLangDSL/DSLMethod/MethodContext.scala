@@ -6,6 +6,7 @@ import scala.collection.mutable
 
 // DSL Imports
 import SetLangDSL.DSL.Value
+import SetLangDSL.DSL.*
 import SetLangDSL.DSLClass.ClassInstance
 import SetLangDSL.DSLScope.ScopeBinding
 
@@ -13,6 +14,10 @@ import SetLangDSL.DSLScope.ScopeBinding
 class MethodContext(methodDefinition: MethodDefinition) {
 
   //val parameterBindings = mutable.Map.empty[String, Value]
+  
+  def getAccessSpecifier: accessSpecifier = {
+    methodDefinition.getAccessSpecifier
+  }
 
   def withParameters(value: Any): MethodContext = {
     val parameters = methodDefinition.getParameters.parameters

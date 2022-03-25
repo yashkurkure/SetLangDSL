@@ -14,6 +14,7 @@ import scala.annotation.targetName
 import scala.collection.mutable
 // DSL Imports
 import SetLangDSL.DSL.*
+import SetLangDSL.concatStrings
 import SetLangDSL.DSLClass.ClassDefinition
 
 
@@ -196,6 +197,22 @@ class ScopeDefinition(parent: ScopeDefinition) {
     val classDefinition = new ClassDefinition(className, null)
     f(classDefinition)
     this.AssignVariable(className).toValue(classDefinition)
+  }
+  
+  def ClassDef(className: String, extend: Extends, f:ClassDefinition=>Unit): Unit = {
+    
+    //First find the className that we need to extend
+    val parentClassName = extend.className
+    
+    //Check if the definition for the parentClass exists
+    val parentClassDefinition = this.Variable(parentClassName)
+    
+    if parentClassDefinition != null && parentClassDefinition.checkIfTypeClassDefinition then
+      val classDefinition = new ClassDefinition(className, parentClassDefinition.getValue.asInstanceOf[ClassDefinition])
+      f(classDefinition)
+      this.AssignVariable(className).toValue(classDefinition)
+    else
+      throw Exception(concatStrings("Could not find definition of parent class: ", parentClassName))
   }
 
   // Todo: Create a deep copy of this class
