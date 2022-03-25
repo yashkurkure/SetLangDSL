@@ -29,6 +29,12 @@ import SetLangDSL.DSLClass.ClassDefinition
  *
  * */
 class ScopeDefinition(parent: ScopeDefinition) {
+  
+  
+  private def this(parent: ScopeDefinition, scopeDefinition: ScopeDefinition) = {
+    this(parent)
+    scopeDefinition.bindingMap.foreach((k,v)=>this.bindingMap.put(k,v))
+  }
 
 
   // Book keeping for the scope's bindings
@@ -49,11 +55,11 @@ class ScopeDefinition(parent: ScopeDefinition) {
 //  }
 
   //Experimental
-  def AssignVariable(name: String):ScopeIncompleteBinding = {
+  def AssignVariable(name: String):ScopeBinding = {
     if bindingMap.contains(name) then
-      new ScopeIncompleteBinding(name, bindingMap, bindingMap(name))
+      new ScopeBinding(name, bindingMap, bindingMap(name))
     else
-      new ScopeIncompleteBinding(name, bindingMap)
+      new ScopeBinding(name, bindingMap)
   }
 
 
@@ -195,10 +201,8 @@ class ScopeDefinition(parent: ScopeDefinition) {
   // Todo: Create a deep copy of this class
   def deepCopy(): ScopeDefinition = {
     //Fields that would need copying
-    // bindings
-
-
-    null
+    // bindingMap
+    new ScopeDefinition(parent, this)
   }
 
 }

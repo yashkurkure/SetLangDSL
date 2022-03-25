@@ -39,7 +39,7 @@ class ClassInstance (classDefinition: ClassDefinition){
    * Contains the active bindings for the instance.
    * Maps (String->Value)
    * */
-  val instanceBindings = mutable.Map.empty[String, Value]
+  //val instanceBindings = mutable.Map.empty[String, Value]
 
 
   /**
@@ -50,7 +50,7 @@ class ClassInstance (classDefinition: ClassDefinition){
    *
    * Note: accessSpecifier is defined in SetLangDSL.DSL
    * */
-  val instanceAccessBindings = mutable.Map.empty[String, accessSpecifier]
+  //val instanceAccessBindings = mutable.Map.empty[String, accessSpecifier]
 
 
   /**
@@ -58,7 +58,7 @@ class ClassInstance (classDefinition: ClassDefinition){
    *
    * Contains the names of the constructors parameters
    * */
-  val constructorParameters: ArrayBuffer[String] = new ArrayBuffer[String]
+  //val constructorParameters: ArrayBuffer[String] = new ArrayBuffer[String]
 
 
   /**
@@ -66,18 +66,18 @@ class ClassInstance (classDefinition: ClassDefinition){
    *  definition into the class instance. before the instance is used to
    *  access fields and methods.
    * */
-  // Load the bindings
-  classDefinition.bindingMap.foreach((s,v)=>{
-      instanceBindings += (s->v)
-    })
-
-  // Load the map of access specifiers
-  classDefinition.accessBindingMap.foreach((s,a)=>{
-    instanceAccessBindings += (s->a)
-  })
-
-  // Load the constructor parameters
-  classDefinition.getConstructorParameters.foreach(s=>constructorParameters.addOne(s))
+//  // Load the bindings
+//  classDefinition.bindingMap.foreach((s,v)=>{
+//      instanceBindings += (s->v)
+//    })
+//
+//  // Load the map of access specifiers
+//  classDefinition.accessBindingMap.foreach((s,a)=>{
+//    instanceAccessBindings += (s->a)
+//  })
+//
+//  // Load the constructor parameters
+//  classDefinition.getConstructorParameters.foreach(s=>constructorParameters.addOne(s))
 
 
   /**
@@ -99,9 +99,9 @@ class ClassInstance (classDefinition: ClassDefinition){
    *        The user would not call this manually.
    * */
   def getField(name: String): Value = {
-    if instanceBindings.contains(name) then
-      if instanceAccessBindings(name) == Public then
-        instanceBindings(name)
+    if classDefinition.bindingMap.contains(name) then
+      if classDefinition.accessBindingMap(name) == Public then
+        classDefinition.bindingMap(name)
       else
         //TODO: Throw exception: Illegal access to private/protected field
         null
@@ -121,12 +121,12 @@ class ClassInstance (classDefinition: ClassDefinition){
    *        The user will not call this manually.
    * */
   def getMethod(name: String): MethodContext = {
-    if instanceBindings.contains(name) && instanceAccessBindings(name) == Public then
+    if classDefinition.bindingMap.contains(name) && classDefinition.accessBindingMap(name) == Public then
       println("getMethod: Found method definition")
-      if instanceBindings(name).checkIfTypeMethodDefinition then
+      if classDefinition.bindingMap(name).checkIfTypeMethodDefinition then
         println("getMethod: Of type methodDefinition")
-        val methodDefinition = instanceBindings(name).getValue.asInstanceOf[MethodDefinition]
-        new MethodContext(this, methodDefinition)
+        val methodDefinition = classDefinition.bindingMap(name).getValue.asInstanceOf[MethodDefinition]
+        new MethodContext(this, methodDefinition.deepCopy())
       else
         null
     else
@@ -143,9 +143,9 @@ class ClassInstance (classDefinition: ClassDefinition){
    * If number of parameters is not 1, then a runtime exception will be thrown
    * */
   def withParameters(value: Any): Unit = {
-    if constructorParameters.size == 1 then
-      instanceBindings += (constructorParameters(0) -> Value(value))
-      instanceAccessBindings += (constructorParameters(0)->Public)
+    if classDefinition.parameters.size == 1 then
+      classDefinition.bindingMap += (classDefinition.parameters(0) -> Value(value))
+      classDefinition.accessBindingMap += (classDefinition.parameters(0)->Public)
     else
       throw RuntimeException("Extra/Less parameters passed to class constructor")
   }
@@ -163,10 +163,10 @@ class ClassInstance (classDefinition: ClassDefinition){
   def withParameters(values: Tuple): Unit = {
     val valuesAsArray = new ArrayBuffer[Any]
     values.productIterator.foreach(value=>valuesAsArray.addOne(value))
-    if(constructorParameters.size == valuesAsArray.size) then
-      for( i <- 0 to constructorParameters.size - 1){
-        instanceBindings += (constructorParameters(i)->Value(valuesAsArray(i)))
-        instanceAccessBindings += (constructorParameters(i)->Public)
+    if(classDefinition.parameters.size == valuesAsArray.size) then
+      for( i <- 0 to classDefinition.parameters.size - 1){
+        classDefinition.bindingMap += (classDefinition.parameters(i)->Value(valuesAsArray(i)))
+        classDefinition.accessBindingMap += (classDefinition.parameters(i)->Public)
       }
     else
       throw RuntimeException("Extra/Less parameters passed to class constructor")

@@ -2,12 +2,21 @@ package SetLangDSL.DSLClass
 
 import SetLangDSL.DSL.*
 import SetLangDSL.DSLMethod.MethodDefinition
-import SetLangDSL.DSLScope.{ScopeDefinition, ScopeIncompleteBinding}
+import SetLangDSL.DSLScope.{ScopeDefinition, ScopeBinding}
 
 import scala.collection.mutable
 
 class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefinition(parent)
 {
+
+  private def this(name: String, parent: ClassDefinition, classDefinition: ClassDefinition)={
+    this(name, parent)
+    
+    // Copy the mutable objects
+    classDefinition.bindingMap.foreach((k,v)=>this.bindingMap.put(k,v))
+    classDefinition.accessBindingMap.foreach((k,v)=>this.accessBindingMap.put(k,v))
+    classDefinition.parameters.foreach(s=>this.parameters.addOne(s))
+  }
 
 
 
@@ -16,27 +25,27 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
 
   // Experimental
   val accessBindingMap = mutable.Map.empty[String, accessSpecifier]
-  override def AssignVariable(name: String): ClassIncompleteBinding = {
+  override def AssignVariable(name: String): ClassBinding = {
 
     //check if the binding already exists, and is not null
     if(bindingMap.contains(name) && bindingMap(name) != null) then
     //println("Binding found for name: " + name)
-      new ClassIncompleteBinding(Public, name, bindingMap, accessBindingMap, bindingMap(name))
+      new ClassBinding(Public, name, bindingMap, accessBindingMap, bindingMap(name))
     else
     //println("Creating incomplete binding for: " + name)
-      new ClassIncompleteBinding(Public, name, bindingMap, accessBindingMap)
+      new ClassBinding(Public, name, bindingMap, accessBindingMap)
 
   }
 
-  def AssignVariable(access: accessSpecifier, name: String): ClassIncompleteBinding = {
+  def AssignVariable(access: accessSpecifier, name: String): ClassBinding = {
     //check if the binding already exists, and is not null
     //check if the variable is private or not
     if(bindingMap.contains(name) && accessBindingMap(name) != Private) then
       println("Binding found for name: " + name)
-      new ClassIncompleteBinding(access, name, bindingMap, accessBindingMap, bindingMap(name))
+      new ClassBinding(access, name, bindingMap, accessBindingMap, bindingMap(name))
     else
       println("Creating incomplete binding for: " + name)
-      new ClassIncompleteBinding(access, name, bindingMap, accessBindingMap)
+      new ClassBinding(access, name, bindingMap, accessBindingMap)
   }
 
 
@@ -74,6 +83,11 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
              f: MethodDefinition=>Value) = {
     val method = new MethodDefinition(this, access, name, parameters, f)
     this.AssignVariable(access, name).toValue(method)
+  }
+
+
+  override def deepCopy(): ClassDefinition = {
+    new ClassDefinition(name, parent, this)
   }
 
 }

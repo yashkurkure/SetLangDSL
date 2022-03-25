@@ -38,9 +38,9 @@ import SetLangDSL.DSL.*
  *      bindingMap: The map with all bindings
  *      value: if the binding already exists this will be set to the value of the binding, else null
  * */
-class ScopeIncompleteBinding(name: String,
-                             bindingMap: mutable.Map[String, Value],
-                             value: Value = null) {
+class ScopeBinding(name: String,
+                   bindingMap: mutable.Map[String, Value],
+                   value: Value = null) {
 
   /**
    * getValue
@@ -100,7 +100,9 @@ class ScopeIncompleteBinding(name: String,
       //check if the class definition exists
       if bindingMap.contains(className) && bindingMap(className).checkIfTypeClassDefinition then
         //create an instance
-        val instance = new ClassInstance(bindingMap(className).getValue.asInstanceOf[ClassDefinition])
+        val classDefinition = bindingMap(className).getValue.asInstanceOf[ClassDefinition]
+        val instance = new ClassInstance(classDefinition.deepCopy())
+        //val instance = new ClassInstance(classDefinition)
         //create a binding for the instance
         println("Created a new object and added to bindings")
         bindingMap += (name->Value(instance))

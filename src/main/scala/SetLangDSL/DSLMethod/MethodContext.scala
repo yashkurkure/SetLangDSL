@@ -7,16 +7,16 @@ import scala.collection.mutable
 // DSL Imports
 import SetLangDSL.DSL.Value
 import SetLangDSL.DSLClass.ClassInstance
-import SetLangDSL.DSLScope.ScopeIncompleteBinding
+import SetLangDSL.DSLScope.ScopeBinding
 
 
 class MethodContext(classInstance: ClassInstance, methodDefinition: MethodDefinition) {
 
-  val parameterBindings = mutable.Map.empty[String, Value]
+  //val parameterBindings = mutable.Map.empty[String, Value]
 
   def withParameters(value: Any): MethodContext = {
     val parameters = methodDefinition.getParameters.parameters
-    parameterBindings += (parameters(0)-> Value(value))
+    methodDefinition.bindingMap += (parameters(0)-> Value(value))
     this
   }
 
@@ -26,7 +26,7 @@ class MethodContext(classInstance: ClassInstance, methodDefinition: MethodDefini
     val parameters = methodDefinition.getParameters.parameters
     if parameters.size == valuesAsArray.size then{
       for( i <- 0 to parameters.size){
-        parameterBindings += (parameters(i)->Value(valuesAsArray(i)))
+        methodDefinition.bindingMap += (parameters(i)->Value(valuesAsArray(i)))
       }
       this
     }
@@ -36,17 +36,7 @@ class MethodContext(classInstance: ClassInstance, methodDefinition: MethodDefini
 
   //TODO: Execution of the method
   def Execute: Value = {
-
-    // Get the parameters for the method
-    val parameters: Seq[String] = methodDefinition.getParameters.parameters
-    // Where should these parameters go?
-    // In the methodDefinition's Bindings?
-    // or the MethodContext's bindings?
-    // Solution=> Each method context gets a deep copy of it's methodDefinition
-
-
-
-    null
+    methodDefinition.getBody(methodDefinition)
   }
 
 //  def Execute: Unit = {

@@ -138,7 +138,7 @@ class ClassTests extends AnyFlatSpec with Matchers {
       })
 
       g.AssignVariable("A_obj").toNewObjectOf("A")
-      g.Variable("A_obj").getMethod("getX")
+      println(g.Variable("A_obj").getMethod("getX").Execute)
 
     }
 
