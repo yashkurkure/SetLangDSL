@@ -10,6 +10,8 @@
 package SetLangDSL.DSLScope
 
 // Scala Imports
+import SetLangDSL.DSLInterface.InterfaceDefinition
+
 import scala.annotation.targetName
 import scala.collection.mutable
 // DSL Imports
@@ -30,8 +32,8 @@ import SetLangDSL.DSLClass.ClassDefinition
  *
  * */
 class ScopeDefinition(parent: ScopeDefinition) {
-  
-  
+
+
   private def this(parent: ScopeDefinition, scopeDefinition: ScopeDefinition) = {
     this(parent)
     scopeDefinition.bindingMap.foreach((k,v)=>this.bindingMap.put(k,v))
@@ -198,15 +200,15 @@ class ScopeDefinition(parent: ScopeDefinition) {
     f(classDefinition)
     this.AssignVariable(className).toValue(classDefinition)
   }
-  
+
   def ClassDef(className: String, extend: Extends, f:ClassDefinition=>Unit): Unit = {
-    
+
     //First find the className that we need to extend
     val parentClassName = extend.className
-    
+
     //Check if the definition for the parentClass exists
     val parentClassDefinition = this.Variable(parentClassName)
-    
+
     if parentClassDefinition != null && parentClassDefinition.checkIfTypeClassDefinition then
       val classDefinition = new ClassDefinition(className, parentClassDefinition.getValue.asInstanceOf[ClassDefinition])
       f(classDefinition)
@@ -214,6 +216,47 @@ class ScopeDefinition(parent: ScopeDefinition) {
     else
       throw Exception(concatStrings("Could not find definition of parent class: ", parentClassName))
   }
+  
+  def ClassDef(className: String, implement: Implements, f: ClassDefinition=>Unit): Unit = {
+    
+    val interfaceName = implement.interfaceName
+
+    val interfaceDefinition = this.Variable(interfaceName)
+    
+    if interfaceDefinition != null && interfaceDefinition.checkIfTypeInterfaceDefinition then
+      //val interfaceDefinition = new InterfaceDefinition()
+      val classDefinition = new ClassDefinition(className, null, interfaceDefinition.getValue.asInstanceOf[InterfaceDefinition])
+      f(classDefinition)
+      if !classDefinition.checkInterfaceImplementation then
+        throw Exception("All methods/fields of interface not implemented")
+      this.AssignVariable(className).toValue(classDefinition)
+    else
+      throw Exception(concatStrings("Could not find definition for interface: ", interfaceName))
+  }
+
+  def InterfaceDef(interfaceName: String, f: InterfaceDefinition=>Unit): Unit = {
+    val interfaceDefinition = new InterfaceDefinition(interfaceName)
+    f(interfaceDefinition)
+    this.AssignVariable(interfaceName).toValue(interfaceDefinition)
+  }
+
+//  def InterfaceDef(interfaceName: String, extend: Extends, f:InterfaceDefinition=>Unit): Unit = {
+//
+//    //First find the className that we need to extend
+//    val parentInterfaceName = extend.className
+//
+//    //Check if the definition for the parentClass exists
+//    val parentInterfaceDefinition = this.Variable(parentInterfaceName)
+//
+//    if parentInterfaceDefinition != null && parentInterfaceDefinition.checkIfTypeInterfaceDefinition then
+//      val interfaceDefinition = new InterfaceDefinition(interfaceName, parentInterfaceDefinition.getValue.asInstanceOf[InterfaceDefinition])
+//      f(interfaceDefinition)
+//      this.AssignVariable(interfaceName).toValue(interfaceDefinition)
+//    else
+//      throw Exception(concatStrings("Could not find definition of parent class: ", parentInterfaceName))
+//  }
+
+
 
   // Todo: Create a deep copy of this class
   def deepCopy(): ScopeDefinition = {

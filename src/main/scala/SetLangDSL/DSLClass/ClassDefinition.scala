@@ -1,6 +1,7 @@
 package SetLangDSL.DSLClass
 
 import SetLangDSL.DSL.*
+import SetLangDSL.DSLInterface.InterfaceDefinition
 import SetLangDSL.DSLMethod.{MethodContext, MethodDefinition}
 import SetLangDSL.DSLScope.{ScopeBinding, ScopeDefinition}
 
@@ -18,6 +19,11 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
     classDefinition.parameters.foreach(s=>this.parameters.addOne(s))
   }
 
+  def this(name: String, parent: ClassDefinition, interface: InterfaceDefinition) = {
+    this(name, parent)
+    val bindingNames = interface.loadBindings()
+    bindingNames.foreach(s=>this.interfaceBindingNames.addOne(s))
+  }
 
 
   //override val bindings: ClassBindings = new ClassBindings(this)
@@ -25,6 +31,10 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
 
   // Experimental
   val accessBindingMap = mutable.Map.empty[String, accessSpecifier]
+
+  //Used for interfaces
+  val interfaceBindingNames: mutable.ArrayBuffer[String] = mutable.ArrayBuffer.empty[String]
+
   override def AssignVariable(name: String): ClassBinding = {
 
     //check if the binding already exists, and is not null
@@ -34,7 +44,6 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
     else
     //println("Creating incomplete binding for: " + name)
       new ClassBinding(Public, name, bindingMap, accessBindingMap)
-
   }
 
   def AssignVariable(access: accessSpecifier, name: String): ClassBinding = {
@@ -82,7 +91,7 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
   def Method(access: accessSpecifier,
              name: String,
              parameters: Parameters,
-             f: MethodDefinition=>Value) = {
+             f: MethodDefinition=>Value): Unit = {
     val method = new MethodDefinition(this, access, name, parameters, f)
     this.AssignVariable(access, name).toValue(method)
   }
@@ -222,6 +231,13 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
     else
       // Case: parent == null, class has not parent
       null
+  }
+
+
+  def checkInterfaceImplementation: Boolean = {
+    println(interfaceBindingNames.toSet)
+    println(bindingMap.keySet)
+    interfaceBindingNames.toSet subsetOf bindingMap.keySet
   }
 
   override def deepCopy(): ClassDefinition = {

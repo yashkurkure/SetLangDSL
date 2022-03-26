@@ -59,5 +59,7 @@ class MethodDefinition(parent: ScopeDefinition,
   override def deepCopy(): MethodDefinition = {
     new MethodDefinition(parent, access, name, parameters, body, this)
   }
+  
+  def isAbstract(): Boolean = if (this.body == null && this.parent == null) true else false
 
 }

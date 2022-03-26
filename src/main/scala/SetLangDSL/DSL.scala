@@ -7,6 +7,7 @@ import scala.collection.mutable
 import DSLClass.*
 import DSLMethod.*
 import DSLScope.*
+import SetLangDSL.DSLInterface.InterfaceDefinition
 
 object DSL {
 
@@ -22,6 +23,9 @@ object DSL {
   
   // For Class inheritance
   case class Extends(className: String)
+  
+  // For Interface Implementation
+  case class Implements(interfaceName: String)
 
   // Access specifiers for Class Members
   sealed trait accessSpecifier
@@ -147,6 +151,13 @@ object DSL {
 
     def checkIfTypeMethodContext: Boolean = {
       if this.getValue.isInstanceOf[MethodContext] then true
+      else
+        false
+
+    }
+
+    def checkIfTypeInterfaceDefinition: Boolean = {
+      if this.getValue.isInstanceOf[InterfaceDefinition] then true
       else
         false
 
