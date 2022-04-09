@@ -168,6 +168,25 @@ object DSL {
       else
         false
     }
+
+    def checkIfTypeInteger: Boolean = {
+      if this.getValue.isInstanceOf[Integer] then true
+      else
+        false
+    }
+
+    
+    //TODO: Given some value object
+    // Evaluate the object as a boolean value
+    def evalAsBoolean: Boolean = {
+
+      if this.checkIfTypeInteger then
+        if this.getValue == 0 then false
+        else true
+      else
+        true
+    }
+    
   }
 
 }

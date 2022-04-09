@@ -265,4 +265,21 @@ class ScopeDefinition(parent: ScopeDefinition) {
     new ScopeDefinition(parent, this)
   }
 
+
+  def Conditional(expression: Value, ifTrue:ScopeDefinition=>Unit, ifFalse: ScopeDefinition=>Unit): Unit = {
+    //println("Creating Anonymous Scope")
+    //create a execution context
+    val scope = new ScopeDefinition(this)
+    //execute the user's operations of the context
+
+    if(expression.evalAsBoolean) then
+      ifTrue(scope)
+    else
+      ifFalse(scope)
+
+
+
+  }
+
+
 }
