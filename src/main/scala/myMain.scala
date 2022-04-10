@@ -22,19 +22,17 @@ object myMain {
     }
   }
 
+  def somefunc(v: Any): Unit ={
+    v
+  }
+
 
 
   @main
   def main(): Unit = {
 
-    val x = new A()
-    x.insert("string 1")
-    val y = x.deepCopy()
-    y.insert("string 2")
-    x.insert("string 3")
+    somefunc(throw RuntimeException("haha got you"))
 
-    println(x.set)
-    println(y.set)
 
   }
 

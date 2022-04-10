@@ -19,9 +19,16 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
     classDefinition.parameters.foreach(s=>this.parameters.addOne(s))
   }
 
+  /**
+   * Constructor
+   * 
+   * Constructs the class definition object using an InterfaceDefinition
+   * */
   def this(name: String, parent: ClassDefinition, interface: InterfaceDefinition) = {
     this(name, parent)
-    val bindingNames = interface.loadBindings()
+    
+    // add access specifier and binding names into the class definition
+    val bindingNames = interface.loadBindings(this.accessBindingMap)
     bindingNames.foreach(s=>this.interfaceBindingNames.addOne(s))
   }
 
