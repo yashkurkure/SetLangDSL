@@ -447,6 +447,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
   private def addMessageToParent(msg: Message): Unit = {
     if parent!= null then
       parent.messages.enqueue(msg)
+      parent.addMessageToParent(msg)
   }
 
 
