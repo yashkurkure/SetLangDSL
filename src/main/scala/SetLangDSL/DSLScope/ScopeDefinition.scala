@@ -178,11 +178,11 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   @targetName("Create Anonymous Scope")
   def Scope(f:ScopeDefinition=>Unit): Unit = {
-    
+
     // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
-    
+
     //create a scope definition
     val scope = new ScopeDefinition(this)
     //execute the programmer's code for the scope
@@ -206,7 +206,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
     // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
-    
+
     //create a execution context
     val scope = new ScopeDefinition(this)
 
@@ -365,18 +365,18 @@ class ScopeDefinition(parent: ScopeDefinition) {
 
   /**
    * InterfaceDef()
-   * 
+   *
    * To define a new interface that implements another interface
-   * 
-   * 
-   * 
+   *
+   *
+   *
    * */
   def InterfaceDef(interfaceName: String, implements: Implements, f: InterfaceDefinition=>Unit): Unit = {
 
     // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
-    
+
     // Parent interface's name
     val parentInterfaceName = implements.interfaceName
 
@@ -448,7 +448,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
     if parent!= null then
       parent.messages.enqueue(msg)
   }
-  
+
 
   //TODO
   def ThrowException(className: String): Unit = {
