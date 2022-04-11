@@ -10,6 +10,7 @@
 package SetLangDSL.DSLScope
 
 // Scala Imports
+import SetLangDSL.DSLClass.ClassInstance
 import SetLangDSL.DSLInterface.InterfaceDefinition
 
 import scala.annotation.targetName
@@ -34,31 +35,76 @@ import SetLangDSL.DSLClass.ClassDefinition
 class ScopeDefinition(parent: ScopeDefinition) {
 
 
+  /**
+   * Private constructor
+   * - Used for creating a deep copy of objects of this class
+   * */
   private def this(parent: ScopeDefinition, scopeDefinition: ScopeDefinition) = {
     this(parent)
     scopeDefinition.bindingMap.foreach((k,v)=>this.bindingMap.put(k,v))
   }
 
+  /**
+   * deepCopy
+   *
+   * returns a deep copy of the current object
+   * */
+  def deepCopy(): ScopeDefinition = {
 
-  // Book keeping for the scope's bindings
-  //val bindings: ScopeBindings = new ScopeBindings(this)
+    // Check for raised exceptions
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return null
 
-  // Experimental
+    //Fields that would need copying
+    // bindingMap
+    new ScopeDefinition(parent, this)
+  }
+
+  /**
+   * bindingMap
+   *
+   * Contains all the (NAME:String -> value: Value) bindings
+   *  this would include all:
+   *    - Variable
+   *    - ScopeDefinition
+   *    - ClassDefinition
+   *    - ClassInstance
+   *    - InterfaceDefinition
+   *
+   * */
   val bindingMap: mutable.Map[String, Value] = mutable.Map.empty[String, Value]
+
+  /**
+   * messages
+   *
+   * This is a queue that holds messages
+   *  the messages can be used to let modify the actions of operations
+   *
+   *  For example in the case of exceptions:
+   *    - An exception is thrown
+   *    - the throw method will add a message to the queue stating a message was thrown
+   *    - the following statements in the scope after the throw will read this message
+   *        and they would not modify the state of the bindings in the scope
+   *    - once catch is called, the exception message will the dequeued and handled
+   *    - the operations hence forth the catch will run normally there after.
+   *
+   *
+   * */
+  val messages: mutable.Queue[Message] = mutable.Queue.empty[Message]
 
 
   /**
-   * Assign
+   * AssignVariable
    *
    * Returns the bindings, on which you can
    *  call operations to create new bindings
    * */
-//  def Assign: ScopeBindings = {
-//    bindings
-//  }
-
-  //Experimental
   def AssignVariable(name: String):ScopeBinding = {
+
+    // Check for raised exceptions
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return new ScopeBinding(null, null, null)
+
     if bindingMap.contains(name) then
       new ScopeBinding(name, bindingMap, bindingMap(name))
     else
@@ -76,6 +122,11 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * If the binding does not exist, it would return null
    * */
   def Variable(name: String): Value= {
+
+    // Check for raised exceptions
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return Value(null)
+
     // Get the incomplete binding (This can tell us if the binding exists or not)
     val incompleteBinding = AssignVariable(name)
 
@@ -106,6 +157,11 @@ class ScopeDefinition(parent: ScopeDefinition) {
    *  s.ExecuteMacro("myMacro", s.Variable("x"))
    * */
   def ExecuteMacro(macroName: String, variable: Value): Unit = {
+
+    // Check for raised exceptions
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
+
     val macroBody = this.Variable(macroName).getValue.asInstanceOf[Value=>Unit]
     macroBody(variable)
   }
@@ -122,10 +178,14 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   @targetName("Create Anonymous Scope")
   def Scope(f:ScopeDefinition=>Unit): Unit = {
-    //println("Creating Anonymous Scope")
-    //create a execution context
+
+    // Check for raised exceptions
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
+
+    //create a scope definition
     val scope = new ScopeDefinition(this)
-    //execute the user's operations of the context
+    //execute the programmer's code for the scope
     f(scope)
   }
 
@@ -142,7 +202,11 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   @targetName("Create Named Scope")
   def Scope(scopeName: String, f:ScopeDefinition => Unit): Unit = {
-    //println("Creating Named Scope")
+
+    // Check for raised exceptions
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
+
     //create a execution context
     val scope = new ScopeDefinition(this)
 
@@ -165,6 +229,11 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   @targetName("Get Named Scope")
   def Scope(scopeName: String): ScopeDefinition = {
+
+    // Check for raised exceptions
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return null
+
     //search if the binding exists
     val incompleteBinding = AssignVariable(scopeName)
 
@@ -196,12 +265,28 @@ class ScopeDefinition(parent: ScopeDefinition) {
    *
    * */
   def ClassDef(className: String, f: ClassDefinition => Unit): Unit = {
+
+    // Check for raised exceptions
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
+
     val classDefinition = new ClassDefinition(className, null)
     f(classDefinition)
     this.AssignVariable(className).toValue(classDefinition)
   }
 
+  /**
+   * ClassDef()
+   *
+   * Serves as an entry point to create a Class
+   * - This method will allow extending other classes
+   * */
   def ClassDef(className: String, extend: Extends, f:ClassDefinition=>Unit): Unit = {
+
+    // Check for raised exceptions
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
+
 
     //First find the className that we need to extend
     val parentClassName = extend.className
@@ -216,53 +301,185 @@ class ScopeDefinition(parent: ScopeDefinition) {
     else
       throw Exception(concatStrings("Could not find definition of parent class: ", parentClassName))
   }
-  
+
+  /**
+   * ClassDef()
+   *
+   * Serves as an entry point to create a Class
+   * - This method will allow implementing interfaces
+   * */
   def ClassDef(className: String, implement: Implements, f: ClassDefinition=>Unit): Unit = {
-    
+
+    // Check for any raised exceptions
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
+
+    // Get the interface Name
     val interfaceName = implement.interfaceName
 
+    // Look for the interface definition
     val interfaceDefinition = this.Variable(interfaceName)
-    
+
+    // If a binding is found and the name is bound to an interface definition
     if interfaceDefinition != null && interfaceDefinition.checkIfTypeInterfaceDefinition then
-      //val interfaceDefinition = new InterfaceDefinition()
-      val classDefinition = new ClassDefinition(className, null, interfaceDefinition.getValue.asInstanceOf[InterfaceDefinition])
+
+      // Create a class definition
+      //  pass the interface definition to it
+      val classDefinition = new ClassDefinition(
+        className, // class name
+        null, // no parent scope
+        interfaceDefinition.getValue.asInstanceOf[InterfaceDefinition] //interface definition
+      )
+
+      // Load the programmer's code into the class
       f(classDefinition)
+
+      // Check if the programmer implemented all the members of the interface
       if !classDefinition.checkInterfaceImplementation then
+        // if not throw an exception
         throw Exception("All methods/fields of interface not implemented")
+
+      // Create a binding for the interface
       this.AssignVariable(className).toValue(classDefinition)
+
+    // If the interface definition was not found throw an exception
     else
       throw Exception(concatStrings("Could not find definition for interface: ", interfaceName))
   }
 
+  /**
+   * InterfaceDef()
+   *
+   * To define a new interface
+   * */
   def InterfaceDef(interfaceName: String, f: InterfaceDefinition=>Unit): Unit = {
-    val interfaceDefinition = new InterfaceDefinition(interfaceName)
+
+    // Check for raised exceptions
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
+
+    val interfaceDefinition = new InterfaceDefinition(interfaceName, null)
     f(interfaceDefinition)
     this.AssignVariable(interfaceName).toValue(interfaceDefinition)
   }
 
-//  def InterfaceDef(interfaceName: String, extend: Extends, f:InterfaceDefinition=>Unit): Unit = {
-//
-//    //First find the className that we need to extend
-//    val parentInterfaceName = extend.className
-//
-//    //Check if the definition for the parentClass exists
-//    val parentInterfaceDefinition = this.Variable(parentInterfaceName)
-//
-//    if parentInterfaceDefinition != null && parentInterfaceDefinition.checkIfTypeInterfaceDefinition then
-//      val interfaceDefinition = new InterfaceDefinition(interfaceName, parentInterfaceDefinition.getValue.asInstanceOf[InterfaceDefinition])
-//      f(interfaceDefinition)
-//      this.AssignVariable(interfaceName).toValue(interfaceDefinition)
-//    else
-//      throw Exception(concatStrings("Could not find definition of parent class: ", parentInterfaceName))
-//  }
+  /**
+   * InterfaceDef()
+   *
+   * To define a new interface that implements another interface
+   *
+   *
+   *
+   * */
+  def InterfaceDef(interfaceName: String, implements: Implements, f: InterfaceDefinition=>Unit): Unit = {
+
+    // Check for raised exceptions
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
+
+    // Parent interface's name
+    val parentInterfaceName = implements.interfaceName
+
+    // Get the parent interface's definition
+    val _parentInterfaceDefinition: Value = this.Variable(parentInterfaceName)
+
+    // If a binding is found and the name is bound to an interfaceDefinition
+    if _parentInterfaceDefinition != null && _parentInterfaceDefinition.checkIfTypeInterfaceDefinition then
+      //TODO
+      val parentInterfaceDefinition: InterfaceDefinition = _parentInterfaceDefinition.getValue.asInstanceOf[InterfaceDefinition]
+
+      val interfaceDefinition = new InterfaceDefinition(interfaceName, parentInterfaceDefinition)
+
+      // Add the programmers methods/fields
+      f(interfaceDefinition)
+
+      //Create a binding
+      this.AssignVariable(interfaceName).toValue(interfaceDefinition)
+
+    // If the interface definition was not found
+    else
+      throw Exception(concatStrings("Could not find definition for interface: ", parentInterfaceName))
 
 
-
-  // Todo: Create a deep copy of this class
-  def deepCopy(): ScopeDefinition = {
-    //Fields that would need copying
-    // bindingMap
-    new ScopeDefinition(parent, this)
   }
+
+  /**
+   *
+   *
+   * */
+  def ExceptionClassDef(className: String, f: ClassDefinition => Unit): Unit = {
+
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then return
+
+    this.InterfaceDef("Exception", c=>{
+      c.AssignVariable("reason")
+    })
+
+    this.ClassDef(className, Implements("Exception"), f)
+  }
+
+  /**
+   * Conditional()
+   *
+   * Given an expression that evaluates to a Value object
+   *  either the scope ifTrue or ifFalse
+   *  will be executed depending on the Value object's evalAsBoolean
+   *  method's return value
+   * */
+  def Conditional(expression: Value, ifTrue:ScopeDefinition=>Unit, ifFalse: ScopeDefinition=>Unit): Unit = {
+
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
+
+    //println("Creating Anonymous Scope")
+    //create a scope definition
+    val scope = new ScopeDefinition(this)
+
+    // evaluate the expression's value as a Boolean
+    if expression.evalAsBoolean then
+      // true case
+      ifTrue(scope)
+    else
+      // false case
+      ifFalse(scope)
+  }
+
+  private def addMessageToParent(msg: Message): Unit = {
+    if parent!= null then
+      parent.messages.enqueue(msg)
+  }
+
+
+  //TODO
+  def ThrowException(className: String): Unit = {
+
+    //Search for the class definition
+    val exceptionClassDefinition = this.Variable(className)
+
+    // If a binding is found and the name is bound to a class definition
+    if exceptionClassDefinition != null && exceptionClassDefinition.checkIfTypeClassDefinition then
+      //create an instance of the exception class
+      val exceptionClassInstance = new ClassInstance(exceptionClassDefinition.getValue.asInstanceOf[ClassDefinition])
+
+      //create a message for the exception
+      val exceptionMsg = new Message(RAISED_EXCEPTION)
+      exceptionMsg.extrasMap.put("exception", exceptionClassInstance)
+
+      //add the exception to the message queue
+      messages.enqueue(exceptionMsg)
+      addMessageToParent(exceptionMsg)
+    else
+      throw Exception(concatStrings("Class not found: ", className))
+  }
+
+  //TODO
+  def Catch(className: String, f: ScopeDefinition=>Unit): Unit = {
+
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      val msg = messages.dequeue
+      val exceptionClassInstance = msg.extrasMap.get("exception")
+      f(this)
+  }
+
 
 }

@@ -27,6 +27,25 @@ object DSL {
   // For Interface Implementation
   case class Implements(interfaceName: String)
 
+  // For exceptions
+  case class Throws(classDefinition: ClassDefinition)
+
+
+
+
+
+  val RAISED_EXCEPTION = 100
+  class Message(msgCode: Integer, extras: Any*)
+  {
+
+    def extrasMap: mutable.Map[String, Any] = mutable.Map.empty[String, Any]
+
+    def what: Integer = this.msgCode
+
+    def getExtra: mutable.Map[String, Any] = extrasMap
+
+  }
+
   // Access specifiers for Class Members
   sealed trait accessSpecifier
   case object Public extends accessSpecifier
@@ -168,6 +187,23 @@ object DSL {
       else
         false
     }
+
+    def checkIfTypeInteger: Boolean = {
+      if this.getValue.isInstanceOf[Integer] then true
+      else
+        false
+    }
+
+    // Evaluate the object as a boolean value
+    def evalAsBoolean: Boolean = {
+
+      if this.checkIfTypeInteger then
+        if this.getValue == 0 then false
+        else true
+      else
+        true
+    }
+    
   }
 
 }
