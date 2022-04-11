@@ -12,7 +12,7 @@ package SetLangDSL.DSLScope
 // Scala Imports
 import SetLangDSL.DSLClass.ClassInstance
 import SetLangDSL.DSLInterface.InterfaceDefinition
-
+import scala.annotation.tailrec
 import scala.annotation.targetName
 import scala.collection.mutable
 // DSL Imports
@@ -404,7 +404,12 @@ class ScopeDefinition(parent: ScopeDefinition) {
   }
 
   /**
+   * ExceptionClassDef
    *
+   * Defines a exception class
+   *
+   * This class will by default implement an interface called "Exception",
+   *  with the field "reason"
    *
    * */
   def ExceptionClassDef(className: String, f: ClassDefinition => Unit): Unit = {
@@ -444,6 +449,15 @@ class ScopeDefinition(parent: ScopeDefinition) {
       ifFalse(scope)
   }
 
+  /**
+   * addMessageToParent
+   *
+   * Given a message, this method will add the message to
+   *  the queues of all the parent scopes till the outer most
+   *  scope
+   *
+   * */
+  @tailrec
   private def addMessageToParent(msg: Message): Unit = {
     if parent!= null then
       parent.messages.enqueue(msg)
@@ -451,7 +465,18 @@ class ScopeDefinition(parent: ScopeDefinition) {
   }
 
 
-  //TODO
+  /**
+   * ThrowException
+   *
+   * This will throw an exception
+   *
+   *  The method will first search for the class definition of whose the
+   *    exception is being thrown. Then an class instance will be created of the
+   *     exception class. Lastly a message will be added to the message queue of
+   *     this scope and the parent scopes.
+   *
+   *
+   * */
   def ThrowException(className: String): Unit = {
 
     //Search for the class definition
@@ -473,7 +498,16 @@ class ScopeDefinition(parent: ScopeDefinition) {
       throw Exception(concatStrings("Class not found: ", className))
   }
 
-  //TODO
+  /**
+   * Catch
+   *
+   * This will catch an exception and execute a block of code.
+   *
+   * The method looks for a exception related message in the queue,
+   *  if found it is dequeued then the code block is executed.
+   *  After that the program returns to the normal flow of execution.
+   *
+   * */
   def Catch(className: String, f: ScopeDefinition=>Unit): Unit = {
 
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
