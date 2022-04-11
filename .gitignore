@@ -9,9 +9,6 @@
 /.idea
 .bsp
 .bsp/
-target
-/target
-target/
 /src/intellij*/*.iml
 /src/intellij*/*.ipr
 /src/intellij*/*.iws
