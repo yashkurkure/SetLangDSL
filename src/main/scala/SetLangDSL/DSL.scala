@@ -29,11 +29,8 @@ object DSL {
 
   // For exceptions
   case class Throws(classDefinition: ClassDefinition)
-
-
-
-
-
+  
+  // For messages inside scopes
   val RAISED_EXCEPTION = 100
   class Message(msgCode: Integer, extras: Any*)
   {

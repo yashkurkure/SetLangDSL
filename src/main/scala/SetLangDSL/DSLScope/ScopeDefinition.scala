@@ -10,8 +10,9 @@
 package SetLangDSL.DSLScope
 
 // Scala Imports
-import SetLangDSL.DSLClass.ClassInstance
+import SetLangDSL.DSLClass.{AbstractClassDefinition, ClassInstance}
 import SetLangDSL.DSLInterface.InterfaceDefinition
+
 import scala.annotation.tailrec
 import scala.annotation.targetName
 import scala.collection.mutable
@@ -422,6 +423,17 @@ class ScopeDefinition(parent: ScopeDefinition) {
 
     this.ClassDef(className, Implements("Exception"), f)
   }
+  
+  /**
+   * AbstractClassDef
+   * 
+   * Defines a abstract class
+   * 
+   * */
+  def AbstractClassDef(className: String, f: AbstractClassDefinition=>Unit): Unit = {
+    
+  }
+  
 
   /**
    * Conditional()
