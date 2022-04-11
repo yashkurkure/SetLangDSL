@@ -39,7 +39,7 @@ object DSL {
   {
 
     def extrasMap: mutable.Map[String, Any] = mutable.Map.empty[String, Any]
-    
+
     def what: Integer = this.msgCode
 
     def getExtra: mutable.Map[String, Any] = extrasMap
@@ -194,8 +194,6 @@ object DSL {
         false
     }
 
-    
-    //TODO: Given some value object
     // Evaluate the object as a boolean value
     def evalAsBoolean: Boolean = {
 

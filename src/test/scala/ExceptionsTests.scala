@@ -42,4 +42,41 @@ class ExceptionsTests extends AnyFlatSpec with Matchers{
     compareValues(actualValue, expectedValue) shouldBe true
   }
 
+  it should "Raise an exception and catch it in the parent scope" in {
+
+    val globalScope = Scope{g=>
+
+      g.ExceptionClassDef("SomeException", f=>{
+        f.AssignVariable("reason").toValue("if you see this, you passed the test")
+      })
+
+      g.AssignVariable("SomeSet").Insert(1)
+
+      g.Scope(f=>{
+        f.Variable("SomeSet").Insert(2)
+
+        // Throw exception
+        f.ThrowException("SomeException")
+
+        // This should be skipped
+        f.Variable("SomeSet").Insert(3)
+      })
+
+      // This should be skipped
+      g.Variable("SomeSet").Insert(4)
+
+      g.Catch("SomeException", f=>{
+
+        //This will not be skipped
+        f.Variable("SomeSet").Insert(5)
+      })
+    }
+
+    //To access the Variable "SomeSet" from outside the defined scope
+    val actualValue = globalScope.Variable("SomeSet").getValue.asInstanceOf[mutable.Set[Any]]
+    // Test the actual value
+    val expectedValue = mutable.Set[Any](1,2,5)
+    compareValues(actualValue, expectedValue) shouldBe true
+  }
+
 }

@@ -51,6 +51,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def deepCopy(): ScopeDefinition = {
 
+    // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return null
 
@@ -100,7 +101,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def AssignVariable(name: String):ScopeBinding = {
 
-    //TODO: This will cause a null pointer exception
+    // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return new ScopeBinding(null, null, null)
 
@@ -122,6 +123,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def Variable(name: String): Value= {
 
+    // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return Value(null)
 
@@ -156,6 +158,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def ExecuteMacro(macroName: String, variable: Value): Unit = {
 
+    // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
 
@@ -175,14 +178,14 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   @targetName("Create Anonymous Scope")
   def Scope(f:ScopeDefinition=>Unit): Unit = {
-
+    
+    // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
-
-    //println("Creating Anonymous Scope")
-    //create a execution context
+    
+    //create a scope definition
     val scope = new ScopeDefinition(this)
-    //execute the user's operations of the context
+    //execute the programmer's code for the scope
     f(scope)
   }
 
@@ -200,10 +203,10 @@ class ScopeDefinition(parent: ScopeDefinition) {
   @targetName("Create Named Scope")
   def Scope(scopeName: String, f:ScopeDefinition => Unit): Unit = {
 
+    // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
-
-    //println("Creating Named Scope")
+    
     //create a execution context
     val scope = new ScopeDefinition(this)
 
@@ -227,6 +230,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
   @targetName("Get Named Scope")
   def Scope(scopeName: String): ScopeDefinition = {
 
+    // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return null
 
@@ -262,6 +266,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def ClassDef(className: String, f: ClassDefinition => Unit): Unit = {
 
+    // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
 
@@ -278,6 +283,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def ClassDef(className: String, extend: Extends, f:ClassDefinition=>Unit): Unit = {
 
+    // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
 
@@ -344,10 +350,11 @@ class ScopeDefinition(parent: ScopeDefinition) {
   /**
    * InterfaceDef()
    *
-   * Serves as an entry point to create a Interface
+   * To define a new interface
    * */
   def InterfaceDef(interfaceName: String, f: InterfaceDefinition=>Unit): Unit = {
 
+    // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
 
@@ -356,20 +363,20 @@ class ScopeDefinition(parent: ScopeDefinition) {
     this.AssignVariable(interfaceName).toValue(interfaceDefinition)
   }
 
+  /**
+   * InterfaceDef()
+   * 
+   * To define a new interface that implements another interface
+   * 
+   * 
+   * 
+   * */
   def InterfaceDef(interfaceName: String, implements: Implements, f: InterfaceDefinition=>Unit): Unit = {
 
+    // Check for raised exceptions
     if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
-
-    //TODO: Create an interface that implements another interface
-    /**
-     * When a interface implements another interface:
-     *  - A new interface definition is created containing the
-     *    properties of both interfaces
-     *  - duplicate members/fields will be resolved when creating a new interface
-     *
-     * */
-
+    
     // Parent interface's name
     val parentInterfaceName = implements.interfaceName
 
@@ -437,17 +444,11 @@ class ScopeDefinition(parent: ScopeDefinition) {
       ifFalse(scope)
   }
 
-  def Scope(f: ScopeDefinition=>Throws): Unit = {
-
-    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
-      return
-
-    //Create the scope definition
-    val scope = new ScopeDefinition(this)
-
-    val exception = f(scope)
+  private def addMessageToParent(msg: Message): Unit = {
+    if parent!= null then
+      parent.messages.enqueue(msg)
   }
-
+  
 
   //TODO
   def ThrowException(className: String): Unit = {
@@ -465,7 +466,8 @@ class ScopeDefinition(parent: ScopeDefinition) {
       exceptionMsg.extrasMap.put("exception", exceptionClassInstance)
 
       //add the exception to the message queue
-      messages.addOne(exceptionMsg)
+      messages.enqueue(exceptionMsg)
+      addMessageToParent(exceptionMsg)
     else
       throw Exception(concatStrings("Class not found: ", className))
   }
