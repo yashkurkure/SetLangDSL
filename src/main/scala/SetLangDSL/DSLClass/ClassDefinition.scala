@@ -33,7 +33,15 @@ class ClassDefinition(name: String, parent: ClassDefinition) extends ScopeDefini
   }
 
 
-  //override val bindings: ClassBindings = new ClassBindings(this)
+  /**
+   * parameters
+   * 
+   * an ArrayBuffer that holds the names of the constructor parameters
+   * 
+   * At the time of instance creation this array buffer will be accessed to
+   *  bind the parameter names to the values inputted by the programmer
+   * 
+   * */
   val parameters = new mutable.ArrayBuffer[String]
 
   // Experimental

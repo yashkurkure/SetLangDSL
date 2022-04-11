@@ -26,24 +26,24 @@ object DSL {
   
   // For Interface Implementation
   case class Implements(interfaceName: String)
-  
+
   // For exceptions
   case class Throws(classDefinition: ClassDefinition)
-  
-  
-  
-  
-  
+
+
+
+
+
   val RAISED_EXCEPTION = 100
   class Message(msgCode: Integer, extras: Any*)
   {
-    
+
     def extrasMap: mutable.Map[String, Any] = mutable.Map.empty[String, Any]
     
     def what: Integer = this.msgCode
-    
+
     def getExtra: mutable.Map[String, Any] = extrasMap
-    
+
   }
 
   // Access specifiers for Class Members

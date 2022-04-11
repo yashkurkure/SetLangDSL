@@ -10,6 +10,7 @@
 package SetLangDSL.DSLScope
 
 // Scala Imports
+import SetLangDSL.DSLClass.ClassInstance
 import SetLangDSL.DSLInterface.InterfaceDefinition
 
 import scala.annotation.targetName
@@ -50,7 +51,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def deepCopy(): ScopeDefinition = {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return null
 
     //Fields that would need copying
@@ -100,8 +101,8 @@ class ScopeDefinition(parent: ScopeDefinition) {
   def AssignVariable(name: String):ScopeBinding = {
 
     //TODO: This will cause a null pointer exception
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
-      return null
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return new ScopeBinding(null, null, null)
 
     if bindingMap.contains(name) then
       new ScopeBinding(name, bindingMap, bindingMap(name))
@@ -121,8 +122,8 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def Variable(name: String): Value= {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
-      return null
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return Value(null)
 
     // Get the incomplete binding (This can tell us if the binding exists or not)
     val incompleteBinding = AssignVariable(name)
@@ -155,7 +156,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def ExecuteMacro(macroName: String, variable: Value): Unit = {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
 
     val macroBody = this.Variable(macroName).getValue.asInstanceOf[Value=>Unit]
@@ -175,7 +176,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
   @targetName("Create Anonymous Scope")
   def Scope(f:ScopeDefinition=>Unit): Unit = {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
 
     //println("Creating Anonymous Scope")
@@ -199,7 +200,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
   @targetName("Create Named Scope")
   def Scope(scopeName: String, f:ScopeDefinition => Unit): Unit = {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
 
     //println("Creating Named Scope")
@@ -226,7 +227,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
   @targetName("Get Named Scope")
   def Scope(scopeName: String): ScopeDefinition = {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return null
 
     //search if the binding exists
@@ -261,7 +262,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def ClassDef(className: String, f: ClassDefinition => Unit): Unit = {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
 
     val classDefinition = new ClassDefinition(className, null)
@@ -277,7 +278,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def ClassDef(className: String, extend: Extends, f:ClassDefinition=>Unit): Unit = {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
 
 
@@ -304,7 +305,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
   def ClassDef(className: String, implement: Implements, f: ClassDefinition=>Unit): Unit = {
 
     // Check for any raised exceptions
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
       return
 
     // Get the interface Name
@@ -347,8 +348,8 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def InterfaceDef(interfaceName: String, f: InterfaceDefinition=>Unit): Unit = {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
-      return null
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
 
     val interfaceDefinition = new InterfaceDefinition(interfaceName, null)
     f(interfaceDefinition)
@@ -357,8 +358,8 @@ class ScopeDefinition(parent: ScopeDefinition) {
 
   def InterfaceDef(interfaceName: String, implements: Implements, f: InterfaceDefinition=>Unit): Unit = {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
-      return null
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
 
     //TODO: Create an interface that implements another interface
     /**
@@ -376,7 +377,7 @@ class ScopeDefinition(parent: ScopeDefinition) {
     val _parentInterfaceDefinition: Value = this.Variable(parentInterfaceName)
 
     // If a binding is found and the name is bound to an interfaceDefinition
-    if(_parentInterfaceDefinition != null && _parentInterfaceDefinition.checkIfTypeInterfaceDefinition) then
+    if _parentInterfaceDefinition != null && _parentInterfaceDefinition.checkIfTypeInterfaceDefinition then
       //TODO
       val parentInterfaceDefinition: InterfaceDefinition = _parentInterfaceDefinition.getValue.asInstanceOf[InterfaceDefinition]
 
@@ -395,10 +396,13 @@ class ScopeDefinition(parent: ScopeDefinition) {
 
   }
 
+  /**
+   *
+   *
+   * */
   def ExceptionClassDef(className: String, f: ClassDefinition => Unit): Unit = {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
-      return null
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then return
 
     this.InterfaceDef("Exception", c=>{
       c.AssignVariable("reason")
@@ -406,23 +410,6 @@ class ScopeDefinition(parent: ScopeDefinition) {
 
     this.ClassDef(className, Implements("Exception"), f)
   }
-
-//  def InterfaceDef(interfaceName: String, extend: Extends, f:InterfaceDefinition=>Unit): Unit = {
-//
-//    //First find the className that we need to extend
-//    val parentInterfaceName = extend.className
-//
-//    //Check if the definition for the parentClass exists
-//    val parentInterfaceDefinition = this.Variable(parentInterfaceName)
-//
-//    if parentInterfaceDefinition != null && parentInterfaceDefinition.checkIfTypeInterfaceDefinition then
-//      val interfaceDefinition = new InterfaceDefinition(interfaceName, parentInterfaceDefinition.getValue.asInstanceOf[InterfaceDefinition])
-//      f(interfaceDefinition)
-//      this.AssignVariable(interfaceName).toValue(interfaceDefinition)
-//    else
-//      throw Exception(concatStrings("Could not find definition of parent class: ", parentInterfaceName))
-//  }
-
 
   /**
    * Conditional()
@@ -434,15 +421,15 @@ class ScopeDefinition(parent: ScopeDefinition) {
    * */
   def Conditional(expression: Value, ifTrue:ScopeDefinition=>Unit, ifFalse: ScopeDefinition=>Unit): Unit = {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
-      return null
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
 
     //println("Creating Anonymous Scope")
     //create a scope definition
     val scope = new ScopeDefinition(this)
 
     // evaluate the expression's value as a Boolean
-    if(expression.evalAsBoolean) then
+    if expression.evalAsBoolean then
       // true case
       ifTrue(scope)
     else
@@ -452,26 +439,45 @@ class ScopeDefinition(parent: ScopeDefinition) {
 
   def Scope(f: ScopeDefinition=>Throws): Unit = {
 
-    if !messages.isEmpty && messages.front.what == RAISED_EXCEPTION then
-      return null
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      return
 
     //Create the scope definition
     val scope = new ScopeDefinition(this)
 
     val exception = f(scope)
-
-
-
   }
 
 
   //TODO
-  def ThrowException(className: String): Any = {
-    className
+  def ThrowException(className: String): Unit = {
+
+    //Search for the class definition
+    val exceptionClassDefinition = this.Variable(className)
+
+    // If a binding is found and the name is bound to a class definition
+    if exceptionClassDefinition != null && exceptionClassDefinition.checkIfTypeClassDefinition then
+      //create an instance of the exception class
+      val exceptionClassInstance = new ClassInstance(exceptionClassDefinition.getValue.asInstanceOf[ClassDefinition])
+
+      //create a message for the exception
+      val exceptionMsg = new Message(RAISED_EXCEPTION)
+      exceptionMsg.extrasMap.put("exception", exceptionClassInstance)
+
+      //add the exception to the message queue
+      messages.addOne(exceptionMsg)
+    else
+      throw Exception(concatStrings("Class not found: ", className))
   }
 
   //TODO
-  def Catch(e: Any) = e
+  def Catch(className: String, f: ScopeDefinition=>Unit): Unit = {
+
+    if messages.nonEmpty && messages.front.what == RAISED_EXCEPTION then
+      val msg = messages.dequeue
+      val exceptionClassInstance = msg.extrasMap.get("exception")
+      f(this)
+  }
 
 
 }

@@ -66,11 +66,10 @@ class ScopeBinding(name: String,
     if this.value == null then
 
       // To prevent cases like Value(Value("v"))
-      if value.isInstanceOf[Value] then
-        toValue(value.asInstanceOf[Value].getValue)
-      else
-        // Create the binding
-        bindingMap += (name -> Value(value))
+      value match {
+        case value1: Value => toValue(value1.getValue)
+        case _ => bindingMap += (name -> Value(value))
+      }
   }
 
 
