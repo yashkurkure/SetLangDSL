@@ -1,6 +1,6 @@
-# SetLangDSL
+******# SetLangDSL
 
-*Version: Homework 4
+*Version: Homework 5
 By Yash Kurkure  
 NetID: ykurku2*
 
@@ -9,8 +9,40 @@ You must import three things:
 1. import import SetLangDSL.DSL.* => this imports DSL object, which acts as an entry point into the DSL
 2. import import SetLangDSL._ => this imports required constructs like Value, accessSpecifiers etc
 
+# Quick Links
+- Homework 1
+	- [Value](https://github.com/yashkurkure/SetLangDSL#value)
+	- [Variable](https://github.com/yashkurkure/SetLangDSL#variable)
+	- [AssignVariable](https://github.com/yashkurkure/SetLangDSL#assignvariable)
+	- [Scope](https://github.com/yashkurkure/SetLangDSL#scope)
+	- [Macro](https://github.com/yashkurkure/SetLangDSL#macro)
+	- [Set Operations](https://github.com/yashkurkure/SetLangDSL#set-operations)
+	- 
+- Homework 2
+	- [Classes and Methods](https://github.com/yashkurkure/SetLangDSL#classes-and-methods)
+	- [Class Inheritance]()
+- Homework 3
+	- [Interfaces](https://github.com/yashkurkure/SetLangDSL#interfaces)
+	- [Abstact Classes]()
+- Homework 4
+	-[Condtional Control Flow](https://github.com/yashkurkure/SetLangDSL#conditional-control-flow)
+	-[Throwing and Catching Exceptions](https://github.com/yashkurkure/SetLangDSL#throwing-and-catching-exceptions)
+- Homework 5
+	- [Partial Evaluation of Scopes](https://github.com/yashkurkure/SetLangDSL/tree/Homework5#partial-evaluation-scopes)
+	- [Map](https://github.com/yashkurkure/SetLangDSL/tree/Homework5#using-map)
 
-# Usage:
+
+
+# How this DSL works?
+
+You start of with a global scope, using the calls Scope{f: ScopeDefiniton => Unit} : ScopeDefinition
+
+The function Scope takes a function as an argument that has ScopeDefinition as the argument.
+
+All the DSL statements go inside this function f. 
+
+ScopeDefinition consists of the bindings and statements that will be evaluated at runtime itself.
+The function f is called inside Scope{} which leads to the lazy evaluation of the statements written in f.
 
 ## Value
 Value is a class defined in SetLangDSL.DSL
@@ -81,19 +113,6 @@ Scope{g=>
   
 ```  
 
-## Delete
-```  
-Delete(value:Value): Value  
-```  
-Delete cannot be used by itself. It must be used on a set value like shown below
-
-Usage examples:
-```  
-Scope{g=>  
- g.Variable("someSet").Delete(Value("a")) or g.Variable("someSet").Delete("a")}  
-```  
-
-
 ## Scope
 ```  
 Scope(name:String, body: construct) => construct  
@@ -146,7 +165,7 @@ Scope { g =>
 ## Set operations
 All the set operations work with the Assign() statement.  
 The package supports:  
-Insert(), Union(), Intersection(), Difference(), SymmetricDifference(), CartesianProduct()
+Delete(), Insert(), Union(), Intersection(), Difference(), SymmetricDifference(), CartesianProduct()
 
 Assume the general format is SetOperation(set1: Value, set2: Value), where Value represents the sets (type checking will be done inside the method)  
 except for Insert, which would be Insert(<values>)
@@ -321,3 +340,79 @@ val globalScope = Scope{g=>
 ```
 
 Tests can be found in ExceptionTests.scala
+
+
+## Partial Evaluation Scopes
+
+The partial evaluation scope extends the definition of a normal scope.
+The added functionality is the partial evaluation of the statements that depend on undefined variables.
+The scope can be evaluated to get a single value just like a function, only in the case all the variables are later decalred by the programmer using the evaluate() method.
+
+
+A simple tutorial on using Partially Evaluted Scopes
+
+Step 1: Create a PartialScope <br>
+
+Notice that the variables y and b are never decalred in the PartialScope
+```
+
+val f = g.PartialScope{p=>
+        p.AssignVariable("x").Insert(1,2,3)
+        p.AssignVariable("z").Union(p.Variable("x"), p.Variable("y"))
+        p.AssignVariable("a").Union(p.Variable("z"), p.Variable("b"))
+      }
+
+```
+
+Step 2; Define the variables y and b
+
+This can be done in 2 ways
+
+Way 1: Both at the same time and then evalaute
+```
+
+f.evaluate{p=>  
+    p.AssignVariable("y").Insert(4,5,6)
+    p.AssignVariable("b").Insert(7,8,9)
+}
+
+```
+This will evaluate the partial scope with the given values of y and b inside the arguement of evaluate.
+
+Way 2: Define y and b separately
+```
+    g.AssignVariable("result1").toValue(f.evaluate{p=>
+        p.AssignVariable("y").Insert(4,5,6)
+      })
+
+      g.AssignVariable("result2").toValue(f.evaluate{p=>
+        p.AssignVariable("b").Insert(7,8,9)
+      })
+```
+
+You can directly assign the value that evalute spits out to some variable. But notice that we first decalred y and the declared b.
+
+In this case for the variable result1, the scope is still only partially evaluted. Thus, the value of result1 will be null.
+
+But in the case of varaiable result2, the scope get completly evaluated. The complete evaluation only occurs when all the undefinedd variables get mapped to some value in the scope. The value of reuslt 2 will be of type DSL.Value
+
+## Using Map
+
+The primary type that the DSL deals with is Value. The Value class can wrap any Scala type inside it, to be used inside the DSL.
+
+Map is defined to take a function Value=>Value. Map can only be called on Sets, so the function Map will check if the Value on which it is being called on is a type of mutable.Set[_] 
+
+Example:
+```
+Scope{g=>
+      g.AssignVariable("set1").Insert(1,2,3,4)
+
+      g.AssignVariable("set2").toValue(g.Variable("set1").Map{v=>Value(v.getValue.asInstanceOf[Int]+1)})
+     }
+```
+
+The argument to the Map function is: v=>Value(v.getValue.asInstanceOf[Int] + 1)
+
+A disadvantage of this DSL is that the user has to convert and remember the types of their variables. This can be seen in the situation above where we had to use asInstanceOf[Int] to be able to use the '+' operator. Since it does not work on the type Any.
+
+
