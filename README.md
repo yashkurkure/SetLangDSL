@@ -1,8 +1,8 @@
-******# SetLangDSL
+# SetLangDSL
 
-*Version: Homework 5
-By Yash Kurkure  
-NetID: ykurku2*
+Current Version: Homework 5
+Name: Yash Kurkure  
+NetID: ykurku2
 
 # What to import?
 You must import three things:
