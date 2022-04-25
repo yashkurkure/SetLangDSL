@@ -10,8 +10,10 @@
 package SetLangDSL.DSLScope
 
 // Scala Imports
+import SetLangDSL.DSL
 import SetLangDSL.DSLClass.{AbstractClassDefinition, ClassInstance}
 import SetLangDSL.DSLInterface.InterfaceDefinition
+import SetLangDSL.PartialScope.PartialScopeDefinition
 
 import scala.annotation.tailrec
 import scala.annotation.targetName
@@ -526,6 +528,18 @@ class ScopeDefinition(parent: ScopeDefinition) {
       val msg = messages.dequeue
       val exceptionClassInstance = msg.extrasMap.get("exception")
       f(this)
+  }
+
+  /**
+   * PartialScope
+   *
+   * Create a scope in which the expressions are partially evaluated
+   *
+   * */
+  def PartialScope(p: PartialScopeDefinition=>DSL.Value): PartialScopeDefinition = {
+    val pScope = new PartialScopeDefinition(this, p)
+    p(pScope)
+    pScope
   }
 
 

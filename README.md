@@ -1,4 +1,4 @@
-# SetLangDSL
+******# SetLangDSL
 
 *Version: Homework 5
 By Yash Kurkure  
@@ -9,6 +9,16 @@ You must import three things:
 1. import import SetLangDSL.DSL.* => this imports DSL object, which acts as an entry point into the DSL
 2. import import SetLangDSL._ => this imports required constructs like Value, accessSpecifiers etc
 
+# How this DSL works?
+
+You start of with a global scope, using the calls Scope{f: ScopeDefiniton => Unit} : ScopeDefinition
+
+The function Scope takes a function as an argument that has ScopeDefinition as the argument.
+
+All the DSL statements go inside this function f. 
+
+ScopeDefinition consists of the bindings and statements that will be evaluated at runtime itself.
+The function f is called inside Scope{} which leads to the lazy evaluation of the statements written in f.
 
 # Usage:
 
@@ -320,4 +330,4 @@ val globalScope = Scope{g=>
 }
 ```
 
-Tests can be found in ExceptionTests.scala
+Tests can be found in ExceptionTests.scala******
