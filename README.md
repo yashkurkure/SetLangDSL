@@ -20,16 +20,17 @@ You must import three things:
 	- 
 - Homework 2
 	- [Classes and Methods](https://github.com/yashkurkure/SetLangDSL#classes-and-methods)
-	- [Class Inheritance]()
+	- [Class Inheritance](https://github.com/yashkurkure/SetLangDSL/edit/master/README.md#class-inheritance)
 - Homework 3
 	- [Interfaces](https://github.com/yashkurkure/SetLangDSL#interfaces)
-	- [Abstact Classes]()
+	- [Abstact Classes (Unimplemented)]()
 - Homework 4
-	-[Condtional Control Flow](https://github.com/yashkurkure/SetLangDSL#conditional-control-flow)
-	-[Throwing and Catching Exceptions](https://github.com/yashkurkure/SetLangDSL#throwing-and-catching-exceptions)
+	- [Condtional Control Flow](https://github.com/yashkurkure/SetLangDSL#conditional-control-flow)
+	- [Throwing and Catching Exceptions](https://github.com/yashkurkure/SetLangDSL#throwing-and-catching-exceptions)
 - Homework 5
 	- [Partial Evaluation of Scopes](https://github.com/yashkurkure/SetLangDSL/tree/Homework5#partial-evaluation-scopes)
 	- [Map](https://github.com/yashkurkure/SetLangDSL/tree/Homework5#using-map)
+	- [Optimization Functions (Unimplemented/Not tested)]()
 
 
 
@@ -178,6 +179,10 @@ val globalScope = Scope{g=>
 
 ## Classes and Methods
 
+Classes and Methods are an extenstion of Scopes. In the DSL a scope is represented by the ScopeDefinition Object, the class by the ClassDefinition and the method by MethodDefinition. Constructs ClassDefinition and MethodDefnition extend ScopeDefnition. Thus all the functionality that can be done inside a Scope can be done inside a Class and a Method. The methods uniqe to ClassDefintion and MethodDefnition allow the programmer to define Constrcuttors/Class Feilds/ Method Signatures etc. Notice that MethodDefintions can only exists inside ClassDefinitions. 
+
+During Object Creation, the a ClassInstance is created to whom a copy of the ClassDefintion is passed. The actual method calls and changes to bindings happen only in the ClassInstance. Thus, ClassDefitinon acts as a blueprint and ClassInstance as the object. MethodDefintion and MethodContext have a similar relation, where for every method call, a new MethodContext is created using a MethodDefinition.
+
 Example Use:
 ```  
 Scope{g=>  
@@ -192,6 +197,76 @@ Scope{g=>
  //Executing a method of a class object // result1 should be assigned to Value(4) g.Assign.Variable("result1").Method("getTheNumber", g.Variable("myObject")).withParameters(Value(2)).Execute }
  ```
 
+## Class Inheritance
+Below is an example where the class "Child" inherits from the class "Parent". The "Parent" has Fields with different access specifiers. 
+The "Child" class defines getter methods which will try and access the feilds of the parent class.
+	
+```
+Scope{g=>
+      g.ClassDef("Parent", {c=>
+
+        c.AssignVariable(Public, "x").toValue(1)
+        c.AssignVariable(Protected, "y").toValue(2)
+        c.AssignVariable(Private, "z").toValue(3)
+
+      })
+
+      g.ClassDef("Child", Extends("Parent"), {c=>
+
+        c.Method(Public,"getX",Parameters(),{m=>
+
+          // Accessing a public member of the parent should
+          //  be allowed inside the scope of the child class
+          m.Variable("x")
+        })
+
+        c.Method(Public,"getY",Parameters(),{m=>
+
+          // Accessing a protected member of the parent should
+          //  be allowed inside the scope of the child class
+          m.Variable("y")
+        })
+
+        c.Method(Public, "getZ", Parameters(), {m=>
+
+          // Accessing private member of the parent should
+          //  not be allowed inside the scope of the child class
+          m.Variable("z")
+        })
+
+      })
+
+      // Create an instance of the child class
+      g.AssignVariable("obj").toNewObjectOf("Child")
+
+      // Test: Access public field in parent using child's instance
+      g.Variable("obj").getField("x").getValue shouldBe 1
+
+      // Test: Access protected field in parent using child's instance
+      // this should not be allowed outside the scope of the class
+      g.Variable("obj").getField("y") shouldBe null
+
+      // Test: Access private field in parent using child's instance (should not allowed)
+      // this should not be inside the child's scope or even outside
+      g.Variable("obj").getField("z") shouldBe null
+
+      // Test: Access a public member of the parent inside a method of the child's class
+      // this should be allowed
+      g.Variable("obj").getMethod("getX").Execute.getValue shouldBe 1
+
+      // Test: Access a protected member of the parent inside a method of the child's class
+      // this should be allowed
+      g.Variable("obj").getMethod("getY").Execute.getValue shouldBe 2
+
+      // Test: Access private member of the parent inside a method of the child's class
+      // this should NOT be allowed 
+      g.Variable("obj").getMethod("getZ").Execute shouldBe null
+
+
+    }
+```
+	
+	
 ## Interfaces
 
 Classes and Interfaces can implement interfaces. Implementation of only 1 interface is allowed per class or interface.
