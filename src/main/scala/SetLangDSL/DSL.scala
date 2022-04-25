@@ -134,6 +134,16 @@ object DSL {
       else
         null
     }
+
+    def Map(f: Value=>Value): Value = {
+      val resultSet = mutable.Set.empty[Any]
+      if this.checkIfTypeSet then
+        val currSet = this.getValue.asInstanceOf[mutable.Set[Any]]
+        currSet.foreach(v=>{
+          resultSet.add(f(Value(v)).getValue)
+        })
+      Value(resultSet)
+    }
     
     def checkIfTypeScope: Boolean = {
       //println("checkType")

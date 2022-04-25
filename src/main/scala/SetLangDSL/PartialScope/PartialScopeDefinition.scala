@@ -27,11 +27,11 @@ class PartialScopeDefinition(parent: ScopeDefinition, body: PartialScopeDefiniti
    * Not affected by partial evaluation
    * */
   override def AssignVariable(name: String): ScopeBinding = {
-    
+
     // if an undefined variable is assigned a value, then remove it from undefinedVariables list
-    if undefinedVariables.contains(name) then 
+    if undefinedVariables.contains(name) then
       undefinedVariables.remove(name)
-      
+
     super.AssignVariable(name)
   }
 
@@ -56,14 +56,14 @@ class PartialScopeDefinition(parent: ScopeDefinition, body: PartialScopeDefiniti
 
     DSL.Value(null)
   }
-  
+
   /**
    * evaluate
-   * 
+   *
    * This function allows the programmer to define any undefined variables
    *  that were previously left undefined.
-   * 
-   * 
+   *
+   *
    * */
   def evaluate(p: PartialScopeDefinition => Unit): DSL.Value = {
     p(this)
