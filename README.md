@@ -386,3 +386,24 @@ You can directly assign the value that evalute spits out to some variable. But n
 In this case for the variable result1, the scope is still only partially evaluted. Thus, the value of result1 will be null.
 
 But in the case of varaiable result2, the scope get completly evaluated. The complete evaluation only occurs when all the undefinedd variables get mapped to some value in the scope. The value of reuslt 2 will be of type DSL.Value
+
+## Using Map
+
+The primary type that the DSL deals with is Value. The Value class can wrap any Scala type inside it, to be used inside the DSL.
+
+Map is defined to take a function Value=>Value. Map can only be called on Sets, so the function Map will check if the Value on which it is being called on is a type of mutable.Set[_] 
+
+Example:
+```
+Scope{g=>
+      g.AssignVariable("set1").Insert(1,2,3,4)
+
+      g.AssignVariable("set2").toValue(g.Variable("set1").Map{v=>Value(v.getValue.asInstanceOf[Int]+1)})
+     }
+```
+
+The argument to the Map function is: v=>Value(v.getValue.asInstanceOf[Int] + 1)
+
+A disadvantage of this DSL is that the user has to convert and remember the types of their variables. This can be seen in the situation above where we had to use asInstanceOf[Int] to be able to use the '+' operator. Since it does not work on the type Any.
+
+
