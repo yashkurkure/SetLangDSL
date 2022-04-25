@@ -28,8 +28,8 @@ You must import three things:
 	-[Condtional Control Flow](https://github.com/yashkurkure/SetLangDSL#conditional-control-flow)
 	-[Throwing and Catching Exceptions](https://github.com/yashkurkure/SetLangDSL#throwing-and-catching-exceptions)
 - Homework 5
-	- [Partial Evaluation of Scopes](https://github.com/yashkurkure/SetLangDSL/tree/Homework5#partial-evaluation-scopes)
-	- [Map](https://github.com/yashkurkure/SetLangDSL/tree/Homework5#using-map)
+	- [Partial Evaluation of Scopes](https://github.com/yashkurkure/SetLangDSL#partial-evaluation-scopes)
+	- [Map](https://github.com/yashkurkure/SetLangDSL#using-map)
 
 
 
