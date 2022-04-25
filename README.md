@@ -330,4 +330,59 @@ val globalScope = Scope{g=>
 }
 ```
 
-Tests can be found in ExceptionTests.scala******
+Tests can be found in ExceptionTests.scala
+
+
+## Partial Evaluation Scopes
+
+The partial evaluation scope extends the definition of a normal scope.
+The added functionality is the partial evaluation of the statements that depend on undefined variables.
+The scope can be evaluated to get a single value just like a function, only in the case all the variables are later decalred by the programmer using the evaluate() method.
+
+
+A simple tutorial on using Partially Evaluted Scopes
+
+Step 1: Create a PartialScope <br>
+
+Notice that the variables y and b are never decalred in the PartialScope
+```
+
+val f = g.PartialScope{p=>
+        p.AssignVariable("x").Insert(1,2,3)
+        p.AssignVariable("z").Union(p.Variable("x"), p.Variable("y"))
+        p.AssignVariable("a").Union(p.Variable("z"), p.Variable("b"))
+      }
+
+```
+
+Step 2; Define the variables y and b
+
+This can be done in 2 ways
+
+Way 1: Both at the same time and then evalaute
+```
+
+f.evaluate{p=>  
+    p.AssignVariable("y").Insert(4,5,6)
+    p.AssignVariable("b").Insert(7,8,9)
+}
+
+```
+This will evaluate the partial scope with the given values of y and b inside the arguement of evaluate.
+
+Way 2: Define y and b separately
+```
+    g.AssignVariable("result1").toValue(f.evaluate{p=>
+        p.AssignVariable("y").Insert(4,5,6)
+      })
+
+      g.AssignVariable("result2").toValue(f.evaluate{p=>
+        p.AssignVariable("b").Insert(7,8,9)
+      })
+```
+
+You can directly assign the value that evalute spits out to some variable. But notice that we first decalred y and the declared b.
+
+In this case for the variable result1, the scope is still only partially evaluted. Thus, the value of result1 will be null.
+
+But in the case of varaiable result2, the scope get completly evaluated. The complete evaluation only occurs when all the undefinedd variables get mapped to some value in the scope. The value of reuslt 2 will be of type DSL.Value
